@@ -100,6 +100,38 @@ itself (Deploys → Trigger deploy) to fill them in automatically.
 
 ---
 
+## Vercel (also works, same repository)
+
+The project is host-agnostic: Vite builds `dist`, and `vite.config.ts` reads Vercel's
+`VERCEL_PROJECT_PRODUCTION_URL` / `VERCEL_URL` as well as Netlify's `URL`, so the link-preview tags
+are correct on both. `netlify.toml` and `public/_headers` are simply ignored by Vercel.
+
+**"The repository couldn't be found"** on Vercel means the Vercel GitHub App has not been given
+access to this repository — not a typo:
+
+1. Open <https://github.com/apps/vercel> → **Configure** (next to the SuhasBS9380 account).
+2. Under **Repository access**, choose *Only select repositories* → add **`wedding-invite`**
+   (or switch to *All repositories*), then **Save**.
+3. Back on Vercel's *Import Git Repository* screen, click **Adjust GitHub App Permissions** (or
+   reload the page) — `wedding-invite` now appears.
+4. Make sure the Vercel account is signed in with the **SuhasBS9380** GitHub account.
+
+Import settings:
+
+| Field | Value |
+| --- | --- |
+| Framework preset | Vite (auto-detected) |
+| Root directory | `./` (leave empty) |
+| Build command | `npm run build` |
+| Output directory | `dist` |
+| Install command | `npm install` |
+| Node.js version | 22.x (Project Settings → General, if it defaults to an older one) |
+| Environment variables | none |
+
+Then **Deploy**. Every `git push` to `main` redeploys, exactly as with Netlify.
+
+---
+
 ## After the deploy — a 60-second check
 
 - [ ] the cloud screen opens on a tap; the music button appears bottom left
