@@ -1,0 +1,157 @@
+/* ---------- opening cloud gate (src/components/CloudGate.tsx, src/anim/clouds.ts) ---------- */
+html.gated .scroller { overflow: hidden; }
+
+.gate {
+  position: fixed; inset: 0; z-index: 100;
+  display: grid; place-items: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+/* phones: an instant placeholder, a soft cloud-white wash, so the screen is covered from the very first
+   frame (no flash of bare sky while the cloud photos download); it fades out as the real clouds fade in */
+@media (max-width: 899px) {
+  .gate::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(120% 90% at 50% 42%, #ffffff 0%, #f3f7fc 45%, #dfe9f5 75%, #c9dbef 100%);
+    transition: opacity 1s ease;
+  }
+  .gate.is-ready::before { opacity: 0; }
+}
+/* once the invitation shows, the clouds still drifting away no longer block touches (src/components/CloudGate.tsx) */
+.gate.is-revealed, .gate.is-revealed .gate__seal { pointer-events: none; }
+.gate__sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+.gate__seal {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+  padding: 0; border: 0; background: none; cursor: pointer; color: inherit; font: inherit;
+}
+.gate__seal:focus-visible { outline: none; }
+.gate__seal:focus-visible .gate__disc { box-shadow: 0 0 0 3px rgba(201, 151, 59, 0.55), 0 18px 40px rgba(40, 70, 120, 0.22); }
+
+/* ivory disc with a fine double gold ring and the DN monogram */
+.gate__disc {
+  position: relative; display: grid; place-items: center;
+  width: clamp(112px, 26vw, 148px); aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, #fffdf7 0%, #fbf4e4 62%, #f3e6c8 100%);
+  box-shadow: inset 0 0 0 1.5px #c9973b, inset 0 0 0 6px #fffaf0, inset 0 0 0 7px rgba(201, 151, 59, 0.6),
+    0 18px 40px rgba(40, 70, 120, 0.22), 0 2px 6px rgba(120, 90, 40, 0.18);
+}
+.gate__mono {
+  width: 58%; aspect-ratio: 400 / 310;
+  background: linear-gradient(180deg, #e9c46f 0%, #c9973b 55%, #9c6d1f 100%);
+  -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center; mask-position: center;
+}
+.gate__pulse {
+  position: absolute; left: 50%; top: 0; width: clamp(112px, 26vw, 148px); aspect-ratio: 1; margin-left: calc(clamp(112px, 26vw, 148px) / -2);
+  border-radius: 50%; border: 1px solid rgba(201, 151, 59, 0.85); pointer-events: none;
+}
+/* the words sit in the glow (below), not in a box */
+.gate__label { display: flex; flex-direction: column; align-items: center; gap: 11px; }
+.gate__tap {
+  font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 34px; line-height: 1;
+  letter-spacing: 0.01em; color: #4a3417; /* ~11:1 on the glow */
+}
+.gate__sub {
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--font-label); font-weight: 500; font-size: 13.5px; line-height: 1;
+  letter-spacing: 0.36em; text-transform: uppercase; color: #6e5021; /* ~6.5:1 on the glow */
+}
+.gate__sub i:last-child { margin-left: -0.36em; } /* cancel the tracking after the last letter, so the text sits centred */
+/* gold hairlines with a diamond at the inner end, like the invitation's dividers */
+.gate__sub i { position: relative; display: block; width: 40px; height: 1px; }
+.gate__sub i:first-child { background: linear-gradient(to right, rgba(184, 138, 46, 0), #b88a2e); }
+.gate__sub i:last-child { background: linear-gradient(to left, rgba(184, 138, 46, 0), #b88a2e); }
+.gate__sub i::after { content: ''; position: absolute; top: -2px; width: 5px; height: 5px; background: #b88a2e; transform: rotate(45deg); }
+.gate__sub i:first-child::after { right: -2px; }
+.gate__sub i:last-child::after { left: -2px; }
+
+/* a soft pool of warm light behind the seal and its words (sunlight breaking through the clouds): it lifts
+   them off the white/grey clouds with no hard edge. Drawn once; it never animates. */
+.gate__glow {
+  position: absolute; left: 50%; top: 50%; z-index: 1; pointer-events: none;
+  width: min(560px, 135vw); height: min(520px, 125vw); translate: -50% -46%;
+  background: radial-gradient(closest-side, rgba(255, 253, 247, 0.94) 0%, rgba(255, 251, 240, 0.86) 38%,
+    rgba(255, 249, 236, 0.5) 66%, rgba(255, 249, 236, 0) 100%);
+}
+
+/* gold hairline ripples on tap (start the size of the disc, centred on it) */
+.gate__ripple {
+  position: absolute; left: 50%; top: 50%; z-index: 1; pointer-events: none;
+  width: clamp(112px, 26vw, 148px); aspect-ratio: 1; border-radius: 50%;
+  translate: -50% calc(-50% - 43px); /* the disc sits above the label */
+  border: 1.5px solid rgba(214, 170, 80, 0.9); box-shadow: 0 0 18px rgba(255, 214, 130, 0.45); opacity: 0;
+}
+
+/* hidden start states (only with JS and motion allowed) */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .gate__disc, html.js .gate__mono, html.js .gate__label, html.js .gate__glow { opacity: 0; }
+}
+
+/* ---------- scroll progress rail (src/components/ScrollProgress.tsx) ----------
+   5px on the right edge, clear of the banners (4vw in). A frosted track with a dark hairline edge and a soft
+   shadow reads on both the blue sky and the cream card; the bright gold fill grows top → bottom. */
+.progress {
+  position: fixed; z-index: 90; right: max(5px, env(safe-area-inset-right)); top: 14svh; bottom: 14svh; width: 5px;
+  border-radius: 5px; overflow: hidden; pointer-events: none;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(60, 40, 10, 0.3), 0 2px 8px rgba(10, 30, 70, 0.3);
+  opacity: 0; transition: opacity 0.8s ease 1.2s;
+}
+.progress.is-shown { opacity: 1; }
+.progress__fill {
+  display: block; height: 100%; border-radius: 5px; transform: scaleY(0); transform-origin: 50% 0; will-change: transform;
+  background: linear-gradient(180deg, #fff0c2, #f0c45e 45%, #c58f2b);
+}
+
+/* ---------- "Swipe up" hint when the page stands still (src/components/ScrollNudge.tsx) ----------
+   Same chevrons and pill as the hero's hint (layout.css), fixed to the screen; a light runs up the chevrons
+   only while it shows. */
+.nudge {
+  /* full width with the contents centred (a translate here was merged away by the CSS minifier) */
+  position: fixed; z-index: 89; left: 0; right: 0; bottom: calc(max(14px, env(safe-area-inset-bottom)) + 62px);
+  display: flex; flex-direction: column; align-items: center; gap: 12px; pointer-events: none;
+  opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease;
+}
+@media (min-width: 900px) { .nudge { bottom: 30px; } }
+.nudge.is-shown { opacity: 1; transform: none; }
+.nudge__chev i { animation: nudge-chev 1.7s ease-in-out infinite paused; }
+.nudge.is-shown .nudge__chev i { animation-play-state: running; }
+.nudge__chev i:nth-child(1) { animation-delay: 0.34s; }
+.nudge__chev i:nth-child(2) { animation-delay: 0.17s; }
+@keyframes nudge-chev {
+  0% { opacity: 0.5; transform: translateY(5px) rotate(45deg); }
+  22% { opacity: 1; transform: translateY(-3px) rotate(45deg); }
+  50% { opacity: 0.5; transform: translateY(-6px) rotate(45deg); }
+  100% { opacity: 0.5; transform: translateY(5px) rotate(45deg); }
+}
+@media (prefers-reduced-motion: reduce) { .nudge__chev i { animation: none; opacity: 0.9; } }
+
+/* ---------- music button (src/components/BackgroundMusic.tsx) ---------- */
+.music {
+  position: fixed; z-index: 90;
+  /* bottom-left: clear of the hanging banners (top) and of the host's badge (bottom-right) */
+  bottom: max(14px, env(safe-area-inset-bottom)); left: max(14px, env(safe-area-inset-left));
+  display: flex; align-items: center; gap: 0; height: 38px; min-width: 38px; padding: 0 11px; box-sizing: border-box;
+  border: 0; border-radius: 999px; cursor: pointer; color: #6f5527;
+  background: rgba(255, 251, 242, 0.95); /* (no backdrop blur: it re-blurs every frame while the page moves) */
+  box-shadow: inset 0 0 0 1px rgba(201, 151, 59, 0.75), 0 6px 18px rgba(20, 40, 80, 0.18);
+  opacity: 0; transform: translateY(8px); pointer-events: none; will-change: transform; /* own layer: no repaints */
+  transition: opacity 0.6s ease, transform 0.6s ease, gap 0.45s ease, padding 0.45s ease;
+}
+.music.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+.music:focus-visible { outline: 2px solid #c9973b; outline-offset: 3px; }
+.music__bars { display: flex; align-items: center; gap: 2.5px; height: 14px; width: 16px; justify-content: center; }
+.music__bar {
+  display: block; width: 2px; height: 14px; border-radius: 1px; transform-origin: 50% 50%; transform: scaleY(0.18); will-change: transform;
+  background: linear-gradient(180deg, #e2b85c, #a87a25);
+}
+/* "Now playing": the pill widens for a moment */
+.music__note {
+  display: inline-block; max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0;
+  font-family: var(--font-label); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+  transition: max-width 0.6s ease, opacity 0.4s ease;
+}
+.music__note em { font-family: var(--font-display); font-style: italic; text-transform: none; letter-spacing: 0.02em; font-size: 13px; }
+.music.is-note { gap: 9px; padding: 0 14px 0 12px; }
+.music.is-note .music__note { max-width: 260px; opacity: 1; }

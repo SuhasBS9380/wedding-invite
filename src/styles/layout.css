@@ -1,0 +1,179 @@
+/* ---------- scroller ---------- */
+.scroller {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  font-family: var(--font-body);
+  overflow-y: auto;
+  overscroll-behavior: none; /* no rubber-band bounce at the top / bottom of the page */
+  -webkit-overflow-scrolling: touch;
+}
+.scroller__content { position: relative; }
+
+/* ---------- hero: one sticky stage inside a tall section ----------
+   While you scroll through the section the stage stays pinned and Anime.js drives it (src/anim/hero.ts).
+   When the section ends the stage is released and scrolls away together with the arch below,
+   so the temple's bottom edge is always flush with the arch's top edge. */
+.hero { position: relative; z-index: 3; height: 400svh; }
+.hero__stick { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--sky); }
+
+.hero__sky { position: absolute; inset: 0; overflow: hidden; transform-origin: 50% 60%; }
+.hero__sky img {
+  position: absolute; left: 0; right: 0; top: -8%;
+  width: 100%; height: 116%; object-fit: cover; object-position: 50% 40%;
+}
+
+/* Phones: the title is centred on the whole screen (the names are small enough that the swipe hint fits under
+   them). Laptops: the big names are centred in the space above the hint (--cue-space), so the two never meet. */
+.hero__stick { --cue-space: 0px; }
+@media (min-width: 900px) { .hero__stick { --cue-space: 120px; } }
+.hero__title {
+  position: absolute; inset: 0 0 var(--cue-space); z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* own GPU layer: rising is a pure slide (without it phones re-drew the big temple image every frame).
+   Starts below the screen; src/anim/hero.ts then sets it so the gopuram's finials just peek above the edge. */
+.hero__temple { position: absolute; inset: 0; z-index: 2; overflow: hidden; transform: translateY(100%); will-change: transform; }
+
+/* Temple + tree canopy travel as ONE piece (.tower-group): the canopy is hung off the tower's bottom edge,
+   so it is only on screen once the tower's base arrives and it never moves relative to the temple.
+   --ar = rendered height / width of the tower (natural art 1.512). --travel (0→1, Anime.js) goes top→bottom-aligned. */
+.hero__temple .tower-group {
+  --ar: 1.755; --travel: 0;
+  position: absolute; left: 50%; top: 0;
+  /* never shorter than the screen, so the bottom edge doesn't float on phones */
+  /* tall enough on phones that the canopy at its base is still off-screen at the start */
+  width: max(100%, calc(135svh / var(--ar))); max-width: none;
+  aspect-ratio: 1 / var(--ar);
+  transform: translate3d(-50%, calc(var(--travel) * (100svh - 100%)), 0);
+  will-change: transform;
+}
+.hero__temple .tower-group picture { display: contents; } /* (phone/laptop image switch; no layout box) */
+.hero__temple .tower { display: block; width: 100%; height: 100%; object-fit: fill; }
+
+/* canopy: fixed to the tower's base, a little taller than 0 so it spills over the arch's garland edge */
+.hero__temple .trees {
+  position: absolute; left: 0; bottom: -1%; width: 100%; height: auto; aspect-ratio: 1 / 0.62; object-fit: fill;
+  display: block; pointer-events: none;
+}
+
+/* swipe-up hint: three gold chevrons (a light runs up them, src/anim/hero.ts) over a cream pill.
+   Sits above the music button's row so the two never meet. */
+.hero__cue {
+  position: absolute; left: 0; right: 0; bottom: calc(max(14px, env(safe-area-inset-bottom)) + 62px); z-index: 3;
+  display: flex; justify-content: center; pointer-events: none;
+}
+/* laptops: no music button row to clear, so the hint sits lower */
+@media (min-width: 900px) { .hero__cue { bottom: 30px; } }
+.hero__cue-in { display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; }
+.hero__chev { display: flex; flex-direction: column; align-items: center; }
+.hero__chev i {
+  display: block; width: 16px; height: 16px; margin-top: -7px;
+  border-left: 2.5px solid #ffe3a0; border-top: 2.5px solid #ffe3a0; border-radius: 2px 0 0 0;
+  transform: rotate(45deg); opacity: 0.5;
+  filter: drop-shadow(0 0 4px rgba(255, 214, 130, 0.9)) drop-shadow(0 1px 2px rgba(6, 40, 110, 0.5));
+}
+.hero__cue-pill {
+  padding: 9px 18px 9px calc(18px + 0.28em); border-radius: 999px;
+  background: rgba(255, 251, 242, 0.94); color: #6f5527;
+  box-shadow: inset 0 0 0 1px rgba(201, 151, 59, 0.75), 0 6px 18px rgba(6, 40, 110, 0.3), 0 0 22px rgba(255, 230, 170, 0.45);
+  font: 600 12px/1 var(--font-label); letter-spacing: 0.28em; text-transform: uppercase;
+}
+
+/* extra cloud corners, only on tall (portrait) screens where the photo's clouds are cropped away */
+.hero__cloud { display: none; }
+@media (max-aspect-ratio: 4/5) {
+  /* own layers: the soft mask is drawn once and drifts with the cloud on the GPU */
+  .hero__cloud { display: block; position: absolute; width: 150vw; height: 46svh; overflow: hidden; pointer-events: none; will-change: transform; }
+  .hero__cloud img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .hero__cloud--a {
+    left: -8vw; top: -3svh;
+    -webkit-mask-image: radial-gradient(70% 70% at 20% 22%, #000 34%, transparent 70%);
+            mask-image: radial-gradient(70% 70% at 20% 22%, #000 34%, transparent 70%);
+  }
+  .hero__cloud--a img { object-position: 0% 0%; }
+  .hero__cloud--b {
+    right: -8vw; bottom: 6svh;
+    -webkit-mask-image: radial-gradient(70% 58% at 80% 52%, #000 34%, transparent 70%);
+            mask-image: radial-gradient(70% 58% at 80% 52%, #000 34%, transparent 70%);
+  }
+  .hero__cloud--b img { object-position: 100% 100%; }
+}
+
+/* ---------- hero title ---------- */
+.title {
+  /* names: phone → desktop by width, and never taller than the window allows (short laptop windows) */
+  --nm: min(clamp(40px, calc(40px + 88 * (100vw - 390px) / 1515), 128px), 10.5svh);
+  --gold-sky: linear-gradient(180deg, #fff3c9 0%, #f6d584 42%, #e2ad4a 100%); /* gold that reads on blue sky */
+  width: 100%; max-width: 1200px; padding: 0 20px; box-sizing: border-box; text-align: center;
+}
+.title__mono {
+  width: min(clamp(84px, 9vw, 130px), 11svh); aspect-ratio: 400 / 310; margin: 0 auto 1.2vw;
+  background: var(--gold-sky);
+  -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-position: center; mask-position: center;
+}
+.title h2 {
+  margin: 0; font-family: var(--font-display); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em;
+  font-size: var(--nm); line-height: 1; color: var(--white);
+}
+.hn { display: block; white-space: nowrap; overflow: hidden; padding: 0.06em 0 0.02em; }
+/* longer names (e.g. "DARSHAN B. S.") step down a little so the single line always fits */
+.hn--long { font-size: min(0.82em, 6.8vw); }
+.hn__word { display: inline-block; }
+.hn__word + .hn__word { margin-left: 0.28em; }
+.hn__ch { display: inline-block; will-change: transform; text-shadow: 0 2px 18px rgba(6, 40, 110, 0.45); }
+.hn__ch--gold {
+  font-size: 1.14em; line-height: 0.88; text-shadow: none;
+  background: var(--gold-sky); -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 10px rgba(6, 40, 110, 0.4));
+}
+.title__weds { display: flex; align-items: center; justify-content: center; gap: 0.22em; margin: calc(var(--nm) * 0.06) 0 calc(var(--nm) * 0.1); }
+.title__weds em {
+  display: inline-block; padding: 0 0.12em;
+  /* the "&" in the display serif's italic: a fuller, more graceful ampersand than the script font's */
+  font-family: var(--font-display); font-style: italic; text-transform: none; font-weight: 500; letter-spacing: 0;
+  font-size: min(clamp(46px, calc(46px + 52 * (100vw - 390px) / 1515), 98px), 8svh); line-height: 1;
+  background: var(--gold-sky); -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+}
+.title__line { flex: 0 0 clamp(30px, 6vw, 110px); height: 1px; }
+.title__line:first-child { background: linear-gradient(to left, #f6d584, rgba(246, 213, 132, 0)); transform-origin: 100% 50%; }
+.title__line:last-child { background: linear-gradient(to right, #f6d584, rgba(246, 213, 132, 0)); transform-origin: 0 50%; }
+.title__flourish { display: block; width: clamp(120px, 13vw, 240px); height: auto; margin: calc(var(--nm) * 0.2) auto 0; overflow: visible; }
+.title__flourish path { stroke: #f6d584; }
+.title__sub {
+  margin-top: calc(var(--nm) * 0.14);
+  font-family: var(--font-label);
+  font-size: clamp(10px, calc(10px + 8 * (100vw - 390px) / 1515), 18px); letter-spacing: 0.24em; text-transform: uppercase; font-weight: 500;
+  color: #fdf0cc;
+}
+
+/* hidden start states for the intro (only with JS and motion allowed); src/anim/hero.ts plays them in */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .hn__ch { opacity: 0; transform: translateY(110%); }
+  html.js .title__weds em,
+  html.js .title__line,
+  html.js .title__flourish path { opacity: 0; }
+}
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  box-sizing: border-box; min-height: 44px;
+  font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; white-space: nowrap;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.btn--ghost {
+  padding: 16px 32px; color: var(--ink);
+  border: 1px solid rgba(243, 237, 228, 0.55);
+  background: rgba(243, 237, 228, 0.06); backdrop-filter: blur(6px);
+}
+.btn--ghost:hover { background: var(--gold); color: var(--btn-ink); border-color: var(--gold); }
+.btn--solid { padding: 17px 36px; background: var(--gold); color: var(--btn-ink); }
+.btn--solid:hover { background: var(--ink); color: var(--btn-ink); }
+.btn--sm { padding: 11px 20px; gap: 10px; }
+.btn--ghost.btn--sm { border-color: rgba(243, 237, 228, 0.6); background: rgba(243, 237, 228, 0.08); }
+.btn__icon { font-size: 13px; }

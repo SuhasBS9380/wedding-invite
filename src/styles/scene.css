@@ -1,0 +1,339 @@
+/* Muhurtham scene: a full-width temple canvas that travels vertically inside a sticky stage as you scroll.
+   At the end the bride and groom perform the homa at the bottom and the details card sits above them.
+   Driven by src/anim/scene.ts */
+.scene { position: relative; z-index: 3; height: 340svh; background: #9fd0f4; }
+.scene__stick {
+  position: sticky; top: 0; height: 100svh; overflow: hidden;
+  background: linear-gradient(180deg, #86c4f1 0%, #a9d6f5 100%);
+}
+
+/* paper clouds */
+.cloud {
+  position: absolute; width: 150px; height: 46px; border-radius: 46px; background: #f6ead4; opacity: 0.95;
+  box-shadow: 34px -24px 0 6px #f6ead4, 78px -12px 0 -2px #f6ead4, 0 6px 14px rgba(40, 80, 130, 0.18);
+  animation: cloud-drift 46s ease-in-out infinite alternate;
+}
+.cloud--1 { left: 12%; top: 34%; transform: scale(1.5); }
+.cloud--2 { right: 6%; top: 12%; transform: scale(1.15); animation-duration: 60s; animation-direction: alternate-reverse; }
+.cloud--3 { left: 58%; top: 58%; transform: scale(0.8); animation-duration: 52s; }
+@keyframes cloud-drift { from { margin-left: -30px; } to { margin-left: 40px; } }
+@media (prefers-reduced-motion: reduce) { .cloud { animation: none; } }
+
+/* over the temple but behind the banners (same z-index, earlier in the DOM), so no petal lands on their words */
+.scene__petals { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.petal { position: absolute; top: 0; opacity: 0; border-radius: 80% 0 80% 0; will-change: transform; }
+.petal--0 { background: linear-gradient(135deg, #ffd0d8, #f48aa3); }
+.petal--1 { background: linear-gradient(135deg, #fff1b8, #f3b63a); }
+.petal--2 { background: linear-gradient(135deg, #ffffff, #f6d9c4); }
+
+/* canvas: edge to edge. --travel (0 → 1, Anime.js) moves it from top-aligned (towers on sky)
+   to bottom-aligned (courtyard floor). */
+.scene__stage { position: absolute; inset: 0; overflow: hidden; z-index: 1; }
+.scene__canvas {
+  --travel: 0;
+  position: absolute; left: 50%; top: 0;
+  width: max(100%, calc(130svh / 1.786)); aspect-ratio: 1000 / 1786;
+  /* on wide screens stop with the whole sanctum (lintel to steps) on screen between the two banners:
+     43.5% of the art's height puts the lintel near the top; never travel past the art's bottom */
+  transform: translate3d(-50%, calc(var(--travel) * max(-43.5%, 100svh - 100%)), 0);
+  will-change: transform;
+}
+.scene__temple { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+
+/* ---------- bride and groom performing the homa (bottom of the stage) ---------- */
+.homa-group {
+  --g: min(98vw, 124svh); /* group width; its height is 0.37 x this */
+  position: absolute; left: 50%; bottom: 0; z-index: 3;
+  width: var(--g); height: calc(var(--g) * 0.37); margin-left: calc(var(--g) / -2);
+  pointer-events: none;
+}
+.homa-group__shadow {
+  position: absolute; left: 4%; right: 4%; bottom: -3%; height: 26%; opacity: 0;
+  background: radial-gradient(closest-side, rgba(60, 30, 6, 0.5), rgba(60, 30, 6, 0)); filter: blur(6px);
+}
+.homa-fig { position: absolute; bottom: 7%; width: 33%; opacity: 0; }
+.homa-fig--girl { left: 3%; }
+.homa-fig--boy { right: 3%; }
+/* own layer: the drop-shadow is rasterised once, then the lean is a pure GPU rotation */
+.homa-fig img { display: block; width: 100%; height: auto; transform-origin: 50% 100%; filter: drop-shadow(0 10px 10px rgba(60, 30, 0, 0.3)); will-change: transform; }
+.homa-kund { position: absolute; left: 27%; width: 46%; bottom: 0; opacity: 0; }
+.homa-kund > img { position: relative; display: block; width: 100%; height: auto; filter: drop-shadow(0 8px 10px rgba(60, 30, 0, 0.3)); }
+/* the wrap fades in with the scene; the glow inside flickers (scale only, own layer) */
+.homa-glow-wrap { position: absolute; inset: 0; opacity: 0; mix-blend-mode: screen; pointer-events: none; }
+.homa-glow {
+  position: absolute; left: 50%; top: 22%; width: 70%; aspect-ratio: 1; margin: -35% 0 0 -35%;
+  background: radial-gradient(closest-side, rgba(255, 180, 70, 0.6), rgba(255, 130, 40, 0.2) 50%, rgba(255, 130, 40, 0) 72%);
+  will-change: transform;
+}
+.homa-embers { position: absolute; left: 0; right: 0; top: 30%; height: 0; }
+.ember { position: absolute; top: 0; width: 5px; height: 5px; border-radius: 50%; background: #ffd66b; box-shadow: 0 0 6px 1px rgba(255, 170, 60, 0.9); opacity: 0; will-change: transform, opacity; }
+
+/* ---------- details card (above the couple): a cream invitation plaque, same language as the arch ---------- */
+/* ---------- silk temple banners (src/components/TempleBanner.tsx): muhurtham left, venue right ----------
+   Maroon silk with a gold zari border and woven top band, hung from a brass rod; a pointed hem with a tassel.
+   Laptop: they hang either side of the sanctum. Phone: side by side above it. */
+/* behind the couple (they kneel in the foreground; the banners hang from the temple behind them) */
+.scene__banners { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.banner {
+  --bw: clamp(290px, 23vw, 400px);
+  position: absolute; top: 0; width: var(--bw); pointer-events: auto;
+  color: #fbf0d9; text-align: center;
+}
+.banner--left { left: clamp(20px, 4vw, 90px); }
+.banner--right { right: clamp(20px, 4vw, 90px); }
+.banner__rod {
+  position: relative; z-index: 2; height: 11px; margin: 0 -16px; border-radius: 6px;
+  background: linear-gradient(180deg, #fbe3a0 0%, #d6a443 45%, #8e6118 100%); box-shadow: 0 3px 6px rgba(60, 30, 0, 0.35);
+}
+.banner__rod::before, .banner__rod::after {
+  content: ''; position: absolute; top: 50%; width: 20px; height: 20px; margin-top: -10px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff1c2, #d6a443 55%, #8e6118); box-shadow: 0 2px 4px rgba(60, 30, 0, 0.35);
+}
+.banner__rod::before { left: -12px; }
+.banner__rod::after { right: -12px; }
+/* the swing sways (own layer, so its shadow is rasterised once, not every frame) */
+.banner__swing { transform-origin: 50% 0; margin-top: -3px; will-change: transform; }
+/* the roll slides down from behind the rod inside this fixed clip (a static clip + a moving layer:
+   no repaint per frame, unlike animating clip-path) */
+.banner__unfurl { overflow: hidden; padding: 0 24px 40px; margin: 0 -24px -40px; }
+.banner__roll { position: relative; will-change: transform; }
+/* soft shadow under the cloth: a blurred copy of its shape, painted once inside the roll's layer
+   (a drop-shadow filter on the swaying banner made the GPU re-blur it every frame) */
+.banner__shade {
+  position: absolute; left: 6px; right: -6px; top: 10px; height: calc(100% - 52px);
+  background: rgba(45, 8, 4, 0.42); filter: blur(12px); border-radius: 4px;
+  clip-path: polygon(-10% -10%, 110% -10%, 110% 92%, 50% 104%, -10% 92%);
+}
+.banner__cloth {
+  --pt: 34px; /* depth of the pointed hem */
+  /* a long hanging banner: ~3/4 of the screen tall, the words centred in it */
+  position: relative; box-sizing: border-box; /* long, but on short screens ending about where the couple's heads are (group height = 0.37 x its width) */
+  min-height: min(74svh, calc(100svh - min(98vw, 124svh) * 0.37 * 0.62)); padding: 48px 26px calc(var(--pt) + 64px);
+  display: flex; flex-direction: column; justify-content: center;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--pt)), 50% 100%, 0 calc(100% - var(--pt)));
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.26), rgba(255, 255, 255, 0) 12%, rgba(255, 220, 200, 0.08) 30%, rgba(0, 0, 0, 0) 46%,
+      rgba(255, 220, 200, 0.07) 64%, rgba(0, 0, 0, 0) 82%, rgba(0, 0, 0, 0.28)),
+    linear-gradient(180deg, #951d2e 0%, #79131f 55%, #600c18 100%);
+}
+/* woven gold band along the top edge */
+.banner__cloth::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 13px;
+  background: radial-gradient(circle, #7a1322 1.6px, transparent 2.1px) 0 50% / 11px 11px repeat-x, linear-gradient(180deg, #f3d488, #bf8d33);
+}
+/* and a matching woven band just above the hem */
+.banner__cloth::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: calc(var(--pt) + 16px); height: 9px;
+  background: radial-gradient(circle, #7a1322 1.3px, transparent 1.8px) 0 50% / 9px 9px repeat-x, linear-gradient(180deg, #f3d488, #bf8d33);
+}
+/* zari border: a gold line inset from the edge that follows the pointed hem (an outline drawn with an
+   even-odd style polygon: outer shape, then back along the inner shape) */
+.banner__zari {
+  --pt: 28px; position: absolute; inset: 21px 10px 9px; pointer-events: none;
+  background: linear-gradient(180deg, #f2d385, #c19034);
+  clip-path: polygon(evenodd, 0 0, 100% 0, 100% calc(100% - var(--pt)), 50% 100%, 0 calc(100% - var(--pt)), 0 0,
+    1.5px 1.5px, calc(100% - 1.5px) 1.5px, calc(100% - 1.5px) calc(100% - var(--pt) - 0.6px), 50% calc(100% - 2.1px),
+    1.5px calc(100% - var(--pt) - 0.6px), 1.5px 1.5px);
+}
+.banner__body { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+.banner__body p { margin: 0; }
+.banner__motif { width: 60px; height: auto; margin-bottom: 14px; fill: #e3bd69; }
+
+.bn__kicker { font: 500 12.5px/1.2 var(--font-label); letter-spacing: 0.3em; text-transform: uppercase; color: #e9c879; }
+.banner__body .bn__day { margin-top: 24px; font: 500 14px/1 var(--font-label); letter-spacing: 0.36em; text-transform: uppercase; color: #f6e7c8; padding-left: 0.36em; }
+.banner__body .bn__num {
+  margin-top: 6px; font: 600 clamp(80px, min(8vw, 13svh), 136px)/0.92 var(--font-display); font-variant-numeric: lining-nums;
+  background: linear-gradient(180deg, #fff2c8 8%, #e9c066 52%, #b8862c 96%); -webkit-background-clip: text; background-clip: text;
+  color: transparent; -webkit-text-fill-color: transparent;
+}
+.banner__body .bn__month { margin-top: 10px; font: 600 20px/1 var(--font-display); letter-spacing: 0.2em; text-transform: uppercase; font-variant-numeric: lining-nums; color: #f6e7c8; padding-left: 0.2em; }
+.bn__rule { position: relative; display: block; width: 72%; height: 9px; margin: 26px 0 22px; }
+.bn__rule::before { content: ''; position: absolute; left: 0; right: 0; top: 4px; height: 1px; background: linear-gradient(90deg, transparent, #e3bd69 30%, #e3bd69 70%, transparent); }
+.bn__rule::after { content: ''; position: absolute; left: 50%; top: 1px; width: 7px; height: 7px; margin-left: -3.5px; background: #e9c879; transform: rotate(45deg); box-shadow: 0 0 0 3px #7c1321; }
+.banner__body .bn__time { font: 600 28px/1.1 var(--font-display); font-variant-numeric: lining-nums; color: #fff6e2; white-space: nowrap; }
+.bn__time span { color: #e3bd69; }
+.banner__body .bn__lagna { margin-top: 13px; font: 500 12.5px/1 var(--font-label); letter-spacing: 0.3em; text-transform: uppercase; color: #e9c879; padding-left: 0.3em; }
+/* "FOLLOWED BY LUNCH": the same small gold capitals as the lagna (bn__lagna), after a shorter divider */
+.bn__rule--sm { width: 52%; margin: 18px 0 14px; }
+.banner__body .bn__feast { margin-top: 0; }
+
+/* live countdown */
+.banner__body .cd { display: flex; align-items: flex-start; gap: 14px; margin-top: 28px; padding-top: 22px; border-top: 1px solid rgba(233, 200, 121, 0.35); }
+.cd__unit { display: flex; flex-direction: column; align-items: center; min-width: 50px; }
+.cd__num { display: block; font: 600 31px/1 var(--font-display); font-variant-numeric: lining-nums tabular-nums; color: #fff3d6; }
+.cd__lab { margin-top: 7px; font: 500 9.5px/1 var(--font-label); letter-spacing: 0.24em; text-transform: uppercase; color: #d9b768; padding-left: 0.24em; }
+.cd__dot { width: 4px; height: 4px; margin-top: 13px; background: #d9b768; transform: rotate(45deg); }
+.banner__body .cd--done { display: block; font: italic 500 17px/1.2 var(--font-display); color: #fff3d6; }
+
+.banner__body .bn__place { margin-top: 22px; font: 600 31px/1.12 var(--font-display); color: #fff6e2; text-wrap: balance; }
+.banner__body .bn__addr { margin-top: 13px; font: 400 16px/1.45 var(--font-body); color: #edd9b3; text-wrap: balance; }
+/* the address is always its two lines (on narrow phones one long line ran into the gold border) */
+.banner__body .bn__addr span { display: block; }
+/* the maps button: a solid gold pill with a pin, so it reads as the thing to tap */
+.bn__link {
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 26px; padding: 13px 24px; border-radius: 999px;
+  background: linear-gradient(180deg, #f3d488, #d3a347); color: #5e0c17; box-shadow: 0 4px 12px rgba(30, 5, 0, 0.35);
+  font: 600 14px/1.1 var(--font-label); letter-spacing: 0.02em; white-space: nowrap;
+  transition: filter 0.2s;
+}
+.bn__link:hover { color: #5e0c17; filter: brightness(1.08); }
+.bn__pin { width: 1.15em; height: 1.15em; flex: none; fill: currentColor; }
+/* a light passing across the button now and then (src/anim/scene.ts) */
+.bn__shine {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 40%; pointer-events: none;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0));
+  transform: translateX(-130%) skewX(-20deg);
+}
+
+/* tassel hanging from the hem's point */
+.banner__tassel { position: relative; display: flex; flex-direction: column; align-items: center; margin-top: -1px; transform-origin: 50% 0; }
+.banner__cord { width: 2px; height: 14px; background: #d6a443; }
+.banner__cap { width: 16px; height: 13px; border-radius: 6px 6px 3px 3px; background: radial-gradient(circle at 40% 30%, #fff0c0, #c99337 60%, #8e6118); }
+.banner__fringe { width: 20px; height: 28px; margin-top: -1px; clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%); background: repeating-linear-gradient(90deg, #ebc56c 0 1.5px, #a97a26 1.5px 2.5px); }
+.banner__bell { width: 12px; height: 12px; margin-top: -2px; border-radius: 50% 50% 45% 45%; background: radial-gradient(circle at 40% 30%, #fff3c8, #cf9a3a 60%, #8e6118); }
+
+/* QR as a small round gold medallion inside the venue banner */
+.seal { position: relative; display: inline-flex; flex-direction: column; align-items: center; margin-top: 26px; text-shadow: none; transition: filter 0.25s; }
+/* "Tap to open in Google Maps": a cream bubble that pops up over the middle of the QR (on a phone the QR is
+   tapped, not scanned, so covering it for a few seconds hides nothing that matters; the address stays clear).
+   Hidden until src/anim/scene.ts pops it (or shown still, when motion is reduced) */
+.seal__hint {
+  position: absolute; z-index: 2; left: 50%; top: 50%; translate: -50% -50%;
+  width: max-content; padding: 8px 14px; border-radius: 12px;
+  background: #fffaf0; color: #5e0c17; box-shadow: 0 6px 18px rgba(30, 5, 0, 0.45), inset 0 0 0 1.5px #d6a443;
+  font: 600 13px/1.25 var(--font-label); text-align: center;
+  opacity: 0; pointer-events: none;
+}
+.seal__hint > span { display: block; }
+/* touch screens: a hand taps the QR now and then (src/anim/scene.ts). .seal__tap is the tap point (the
+   fingertip), a little right of and below the QR's centre; the ripple is centred on it and the hand's
+   fingertip (48% / 25% of the icon) sits on it */
+.seal__tap { position: absolute; left: 60%; top: 62%; width: 0; height: 0; z-index: 2; pointer-events: none; }
+/* the press: a gold ring with a warm fill, a soft white halo just behind it, and a burst of gold sparks */
+.seal__tap-ring {
+  position: absolute; left: -18px; top: -18px; width: 36px; height: 36px; border-radius: 50%;
+  border: 2.5px solid #c9973b; background: radial-gradient(circle, rgba(255, 226, 150, 0.55), rgba(214, 164, 67, 0.15) 70%);
+  box-shadow: 0 0 12px rgba(214, 164, 67, 0.7); opacity: 0;
+}
+.seal__tap-ring--soft { border: 1.5px solid rgba(255, 255, 255, 0.95); background: none; box-shadow: 0 0 10px rgba(255, 255, 255, 0.7); }
+.seal__spark {
+  position: absolute; left: -1.5px; top: -4px; width: 3px; height: 8px; border-radius: 2px;
+  background: linear-gradient(#fff6d8, #e7b950); box-shadow: 0 0 5px rgba(255, 200, 90, 0.9); opacity: 0;
+}
+/* the hand: gold gradient with a thin maroon outline, lifted off the QR by a shadow and a warm glow */
+.seal__hand {
+  position: absolute; left: -17px; top: -9px; width: 36px; height: 36px; transform-origin: 48% 25%; overflow: visible;
+  stroke: #6b1420; stroke-width: 0.9; stroke-linejoin: round; paint-order: stroke;
+  filter: drop-shadow(0 3px 3px rgba(30, 5, 0, 0.5)) drop-shadow(0 0 6px rgba(255, 210, 120, 0.65)); opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) { .scene.is-hint .seal__hand { opacity: 1; } }
+/* with a mouse: the QR stays as it is; the bubble shows only while the pointer is over it (or keyboard focus),
+   and the QR fades back behind it so the words read cleanly */
+@media (hover: hover) and (pointer: fine) {
+  .seal__hint { transform: scale(0.92); transition: opacity 0.22s ease, transform 0.22s ease; }
+  .seal__disc img { transition: opacity 0.22s ease; }
+  .seal:hover .seal__hint, .seal:focus-visible .seal__hint { opacity: 1; transform: scale(1); }
+  .seal:hover .seal__disc img, .seal:focus-visible .seal__disc img { opacity: 0.25; }
+}
+/* a gold ring breathing outwards from the medallion while the hint runs */
+.seal__pulse { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(243, 212, 136, 0.9); opacity: 0; pointer-events: none; }
+.seal:hover { filter: brightness(1.06); }
+.seal__disc {
+  position: relative; display: grid; place-items: center; width: clamp(120px, min(11vw, 19svh), 184px); aspect-ratio: 1; border-radius: 50%;
+  background: #fffaf0; box-shadow: 0 6px 16px rgba(30, 5, 0, 0.35);
+}
+.seal__rings { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.seal__ring { fill: none; stroke: #c9973b; stroke-width: 3; stroke-dasharray: 1; stroke-dashoffset: 0; transform: rotate(-90deg); transform-origin: 50% 50%; }
+.seal__ring--thin { stroke-width: 1; }
+.seal__dot { fill: #c9973b; }
+.seal__disc img { position: relative; width: 62%; height: 62%; display: block; }
+
+/* hidden start states; the scene timeline brings them in */
+html.js .banner__rod { opacity: 0; }
+html.js .banner__roll { transform: translateY(-101%); }
+
+html.js .scene [data-s] { opacity: 0; }
+/* each line that fades in is its own small layer, so its fade never repaints the banner under it;
+   the countdown too (it changes every minute) */
+.scene [data-s], .banner__body .cd { will-change: transform, opacity; }
+
+/* phones / narrow: the card stacks; the couple sit a little larger and closer together */
+@media (max-width: 899px) {
+  .cloud { display: none; }
+  /* --- phones only: the laptop layout above is untouched --- */
+
+  /* Use the real visible height. 100svh is the height with the browser bar showing; when the bar is
+     hidden the stage was shorter than the screen and the sky showed underneath the art. */
+  .scene { --vh: 100svh; }
+  @supports (height: 100dvh) { .scene { --vh: 100dvh; } }
+  .scene__stick { height: var(--vh); background: linear-gradient(180deg, #86c4f1 0%, #a9d6f5 60%, #c9a577 100%); }
+  .scene__canvas {
+    --stop: calc(var(--vh) * 0.11);
+    width: max(100%, calc(var(--vh) * 1.3 / 1.786));
+    transform: translate3d(-50%, calc(var(--travel) * (var(--vh) - 100% + var(--stop))), 0);
+  }
+
+  /* banners side by side above the sanctum, compact type */
+  .banner { --bw: min(44vw, 250px); }
+  .banner--left { left: 4vw; }
+  .banner--right { right: 4vw; }
+  .banner__rod { margin: 0 -8px; height: 7px; }
+  .banner__rod::before, .banner__rod::after { width: 12px; height: 12px; margin-top: -6px; }
+  .banner__rod::before { left: -7px; }
+  .banner__rod::after { right: -7px; }
+  /* side padding keeps the words clear of the zari line (inset 6px) */
+  .banner__cloth { --pt: 20px; min-height: calc(var(--vh) * 0.43); padding: 24px 12px calc(var(--pt) + 26px); }
+  .banner__cloth::after { bottom: calc(var(--pt) + 10px); height: 6px; background-size: 6px 6px, auto; }
+  .banner__cloth::before { height: 8px; background-size: 7px 7px, auto; }
+  .banner__zari { --pt: 16px; inset: 13px 6px 5px; }
+  .banner__rod { height: 7px; }
+  .banner__motif { width: 34px; margin-bottom: 8px; }
+  .bn__kicker { font-size: 8px; letter-spacing: 0.2em; }
+  .banner__body .bn__day { margin-top: 10px; font-size: 9px; letter-spacing: 0.28em; }
+  .banner__body .bn__num { font-size: 54px; }
+  .banner__body .bn__month { margin-top: 6px; font-size: 12px; letter-spacing: 0.14em; }
+  .bn__rule { margin: 13px 0 11px; }
+  .banner__body .bn__time { font-size: 15px; }
+  .banner__body .bn__lagna { margin-top: 7px; font-size: 8px; letter-spacing: 0.22em; }
+  .bn__rule--sm { margin: 10px 0 8px; }
+  .banner__body .bn__feast { margin-top: 0; }
+  .banner__body .cd { gap: 5px; margin-top: 14px; padding-top: 11px; }
+  .cd__unit { min-width: 28px; }
+  .cd__lab { margin-top: 5px; }
+  .cd__num { font-size: 15px; }
+  .cd__lab { font-size: 6.5px; letter-spacing: 0.16em; }
+  .cd__dot { margin-top: 6px; width: 2px; height: 2px; }
+  .banner__body .bn__day { margin-top: 12px; }
+  .banner__body .bn__place { margin-top: 12px; font-size: clamp(12.5px, 3.9vw, 14.5px); line-height: 1.15; }
+  .banner__body .bn__place span { display: block; }
+  .banner__body .bn__addr { margin-top: 7px; font-size: clamp(10px, 2.9vw, 11px); line-height: 1.35; }
+  .seal { margin-top: 13px; }
+  .seal__disc { width: 84px; }
+  .seal__hint { padding: 6px 9px; border-radius: 9px; font-size: 10.5px; }
+  .seal__hand { width: 38px; height: 38px; left: -18px; top: -9.5px; }
+  .seal__tap-ring { width: 34px; height: 34px; left: -17px; top: -17px; }
+  .bn__nb { white-space: nowrap; }
+  /* (wraps to "Open in / Google Maps" in the narrow banner) */
+  .bn__link { margin-top: 13px; min-height: 34px; padding: 6px 12px 6px 9px; font-size: clamp(10px, 2.9vw, 11px); letter-spacing: 0; gap: 5px; white-space: normal; text-align: left; border-radius: 18px; }
+  .bn__pin { width: 1.4em; height: 1.4em; }
+  .banner__body .cd--done { font-size: 14px; }
+  .banner__cord { height: 8px; width: 1.5px; }
+  .banner__cap { width: 12px; height: 10px; }
+  .banner__bell { width: 9px; height: 9px; }
+  .banner__fringe { height: 15px; width: 12px; }
+
+  /* bigger couple, lifted off the bottom edge so they sit on the courtyard under the banners.
+     The group is wider than the screen; only its middle is used, so the figures can be large. */
+  .homa-group { --g: 168vw; height: calc(var(--g) * 0.4); bottom: calc(var(--vh) * 0.05); }
+  .homa-fig { width: 35%; bottom: 9%; }
+  .homa-fig--girl { left: 17.5%; }
+  .homa-fig--boy { right: 17.5%; }
+  .homa-kund { left: 29%; width: 42%; }
+  .homa-group__shadow { left: 20%; right: 20%; }
+
+  /* GPU load: mobile browsers flickered/stalled the temple layer under these effects.
+     The glow blends normally (screen blending re-reads the big temple layer every frame), and the swaying
+     figures get their own layers so their drop-shadows are rasterised once instead of every frame. */
+  .homa-glow-wrap { mix-blend-mode: normal; }
+}

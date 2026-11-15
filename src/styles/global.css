@@ -1,0 +1,35 @@
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+}
+body {
+  color: var(--ink);
+}
+a {
+  color: var(--ink);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--gold);
+}
+h2 {
+  margin: 0;
+}
+
+/* Elements animated in by Anime.js start hidden (only when JS is running); see src/anim/reveal.ts */
+html.js [data-anim] { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-anim] { opacity: 1; }
+}
+
+/* Hero intro pieces start hidden; src/anim/hero.ts fades them in on load */
+html.js [data-intro] { opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-intro] { opacity: 1; }
+  html.js .hero__cue-in { opacity: 1; } /* the swipe hint, still */
+  html.js .hero__chev i { opacity: 0.9; }
+}

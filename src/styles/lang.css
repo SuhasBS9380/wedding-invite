@@ -1,0 +1,129 @@
+/* ---------- language switch, bottom right (src/components/LangToggle.tsx) ----------
+   One round 38px button, the same size and finish as the music button in the bottom left (gate.css), mirrored
+   to the other corner. It shows the language it switches to — "ಕ" while reading English, "E" while reading
+   Kannada — so it never grows into a wide pill on small screens. */
+.lang {
+  position: fixed; z-index: 91;
+  bottom: max(14px, env(safe-area-inset-bottom)); right: max(14px, env(safe-area-inset-right));
+  display: grid; place-items: center;
+  width: 38px; height: 38px; padding: 0; box-sizing: border-box;
+  border: 0; border-radius: 50%; cursor: pointer; color: #6f5527;
+  background: rgba(255, 251, 242, 0.95); /* (no backdrop blur: it would re-blur every frame while the page moves) */
+  box-shadow: inset 0 0 0 1px rgba(201, 151, 59, 0.75), 0 6px 18px rgba(20, 40, 80, 0.18);
+  opacity: 0; transform: translateY(8px); pointer-events: none; will-change: transform;
+  transition: opacity 0.6s ease, transform 0.6s ease, background-color 0.2s ease;
+}
+.lang.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+.lang.is-shown:hover { background: #fffdf8; }
+.lang.is-shown:active { transform: scale(0.94); }
+.lang:focus-visible { outline: 2px solid #c9973b; outline-offset: 3px; }
+/* the glyph: a Latin "E" in the label face, a Kannada "ಕ" in the Kannada serif (it sits a hair low) */
+.lang__mark {
+  font-family: var(--font-label); font-size: 15px; font-weight: 600; line-height: 1;
+  letter-spacing: 0; transform: translateY(0.5px);
+}
+.lang__mark:lang(kn) { font-family: 'Noto Serif Kannada', Georgia, serif; font-size: 16px; transform: translateY(1px); }
+
+/* A language switch re-creates the name spans after their one-off reveal timelines have already run. Keep the
+   fresh spans visible instead of leaving them in the animation's hidden start state (layout.css / arch.css). */
+html.js.lang-switched .hn__ch,
+html.js.lang-switched .couple__ch { opacity: 1 !important; transform: none !important; }
+
+/* ---------- Kannada typography (html[lang="kn"]) ----------
+   The Latin faces (Cormorant, Abhaya, Luxurious Script, Jost) carry no Kannada glyphs, so all three text roles
+   switch to Noto Serif Kannada, which matches the serif invitation. Sizes and tracking are tuned for the
+   script: no wide letter-spacing, a little more leading, and shorter lines allowed to wrap. */
+html[lang="kn"] {
+  --font-script: 'Noto Serif Kannada', Georgia, serif;
+  --font-display: 'Noto Serif Kannada', Georgia, serif;
+  --font-body: 'Noto Serif Kannada', Georgia, serif;
+}
+
+/* the small tracked labels use Latin-only faces; give them the Kannada serif */
+html[lang="kn"] .inv-mantra,
+html[lang="kn"] .title__sub,
+html[lang="kn"] .gate__sub,
+html[lang="kn"] .banner__body .bn__kicker,
+html[lang="kn"] .banner__body .bn__day,
+html[lang="kn"] .banner__body .bn__lagna,
+html[lang="kn"] .cd__lab,
+html[lang="kn"] .bn__link,
+html[lang="kn"] .seal__hint,
+html[lang="kn"] .music__note,
+html[lang="kn"] .couple__guide-label { font-family: var(--font-body); }
+
+/* Kannada does not want the Latin habit of wide tracking */
+html[lang="kn"] .inv-mantra,
+html[lang="kn"] .title__sub,
+html[lang="kn"] .banner__body .bn__kicker,
+html[lang="kn"] .banner__body .bn__day,
+html[lang="kn"] .banner__body .bn__lagna,
+html[lang="kn"] .cd__lab,
+html[lang="kn"] .bn__link,
+html[lang="kn"] .seal__hint,
+html[lang="kn"] .music__note { letter-spacing: 0.02em; }
+
+/* invocation: longer in Kannada, so it may wrap instead of being squeezed onto one line */
+html[lang="kn"] .inv-mantra {
+  white-space: normal;
+  font-size: clamp(11px, calc(10px + 6 * var(--k)), 17px); line-height: 1.45;
+}
+
+/* "ಶುಭ ವಿವಾಹ": the display serif in place of the Latin script face */
+html[lang="kn"] .inv-script {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: min(clamp(42px, calc(40px + 70 * var(--k)), 112px), 12.4cqw);
+  letter-spacing: 0; word-spacing: 0.12em; line-height: 1.3;
+}
+
+/* sentences: a little more leading, and no synthetic italics on Kannada */
+html[lang="kn"] .inv-lead,
+html[lang="kn"] .couple__parents,
+html[lang="kn"] .couple__guide { line-height: 1.5; }
+html[lang="kn"] .inv-lead,
+html[lang="kn"] .couple__guide-label { font-style: normal; }
+
+/* names: Kannada clusters are taller, so the mask gets more room above and below */
+html[lang="kn"] .title h2 { font-weight: 600; letter-spacing: 0; }
+html[lang="kn"] .hn { line-height: 1.28; padding: 0.12em 0 0.08em; }
+html[lang="kn"] .hn--kn { font-size: 0.92em; }
+html[lang="kn"] .couple__name { font-weight: 600; letter-spacing: 0; }
+html[lang="kn"] .couple__name--kn {
+  font-size: clamp(20px, 5cqw, 96px); line-height: 1.35; padding: 0.14em 0 0.1em;
+}
+
+/* the opening seal */
+html[lang="kn"] .gate__tap { font-style: normal; font-weight: 600; font-size: 30px; }
+html[lang="kn"] .gate__sub { font-size: 13px; letter-spacing: 0.12em; }
+
+/* muhurtham + venue banners: the cloth is narrow, so texts step down a little */
+html[lang="kn"] .banner__body .bn__kicker { font-size: 13px; }
+html[lang="kn"] .banner__body .bn__day { font-size: 15px; letter-spacing: 0.04em; }
+html[lang="kn"] .banner__body .bn__month { font-size: 17px; letter-spacing: 0.05em; }
+html[lang="kn"] .banner__body .bn__time { font-size: 21px; }
+html[lang="kn"] .banner__body .bn__lagna { font-size: 13px; }
+html[lang="kn"] .banner__body .bn__feast { font-size: 12px; line-height: 1.35; }
+html[lang="kn"] .banner__body .bn__place { font-size: 25px; line-height: 1.28; }
+html[lang="kn"] .banner__body .bn__addr { font-size: 14px; line-height: 1.45; }
+
+html[lang="kn"] .banner__body .cd--done { font-style: normal; font-size: 15px; }
+html[lang="kn"] .cd__lab { font-size: 10.5px; }
+html[lang="kn"] .bn__link { font-size: 13px; }
+html[lang="kn"] .seal__hint { font-size: 12px; }
+
+/* phones: the cloth is only ~174px wide here (scene.css, max-width 899px). The Kannada time reads wider
+   than the English one, so it and the address step down to stay clear of the gold zari border. */
+@media (max-width: 599px) {
+  html[lang="kn"] .banner__body .bn__time { font-size: 17px; }
+  html[lang="kn"] .banner__body .bn__place { font-size: 22px; }
+  html[lang="kn"] .banner__body .bn__addr { font-size: 12.5px; }
+  html[lang="kn"] .banner__body .bn__kicker { font-size: 11px; }
+  html[lang="kn"] .banner__body .bn__month { font-size: 15px; }
+  html[lang="kn"] .banner__body .bn__day { font-size: 13px; }
+}
+
+/* narrow pages (arch.css container query): the Kannada invocation still fits on one line at this size */
+@container (max-width: 700px) {
+  html[lang="kn"] .inv-mantra { font-size: clamp(10.5px, 2.6cqw, 13px); letter-spacing: 0.02em; }
+  html[lang="kn"] .inv-script { margin-top: -4cqw; }
+}

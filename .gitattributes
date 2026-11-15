@@ -1,0 +1,3 @@
+# Store every text file in the repository with LF endings, so a Windows checkout and Netlify's Linux build
+# see exactly the same bytes.
+* text=auto eol=lf

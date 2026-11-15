@@ -1,0 +1,144 @@
+/* Edge-to-edge temple arch: cap + repeating pillar tile + base.
+   Typography replicates theartfulinvitesdemo02.framer.website (measured at 390px and 1905px wide);
+   sizes interpolate fluidly between those two widths. Spacing is in cqw of the page width. */
+.archpage {
+  --k: calc((100cqw - 390px) / 1515);          /* 0 at 390px wide → 1 at 1905px wide */
+  position: relative; z-index: 3; width: 100%;
+  container-type: inline-size;
+  background: #f3ece0;
+}
+.archpage__top,
+.archpage__bottom,
+.archpage__mid { width: 100%; background-position: center top; box-sizing: border-box; }
+
+.archpage__top {
+  aspect-ratio: 1600 / 917;
+  background: url('/assets/arch-top.webp') center top / 100% auto no-repeat;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 26.5cqw 23cqw 0;
+}
+.archpage__mid {
+  /* `round` keeps the pillar tile whole: it scales slightly so the tile count is an integer */
+  background-image: url('/assets/arch-mid.webp');
+  background-size: 100% auto; background-repeat: round;
+  padding: 0 23cqw 2cqw;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.archpage__bottom {
+  aspect-ratio: 1600 / 633;
+  background: url('/assets/arch-bottom.webp') center bottom / 100% auto no-repeat;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  padding: 6.5cqw 23cqw 0; text-align: center;
+}
+.archpage__top, .archpage__mid, .archpage__bottom { text-align: center; }
+
+/* ---------- invite copy (font / size / colour from the reference) ---------- */
+.inv-logo { width: clamp(64px, 8.5cqw, 170px); height: auto; display: block; }
+
+.inv-mantra {
+  margin: 1cqw 0 0; font-family: var(--font-label); font-weight: 500; color: #c9588d; text-transform: uppercase;
+  font-size: clamp(10px, calc(10px + 6 * var(--k)), 16px); letter-spacing: 0.24em; line-height: 1.4;
+  white-space: nowrap; /* the invocation is always one line */
+}
+.inv-blessing {
+  margin: 4.7cqw 0 0; max-width: 31cqw;
+  font-family: var(--font-body); font-weight: 400; color: #636361;
+  font-size: clamp(12.5px, calc(12.5px + 15.5 * var(--k)), 28px); line-height: 1.2;
+}
+.inv-script {
+  margin: 0; font-family: var(--font-script); font-weight: 400; color: #2986c4;
+  /* one line: capped so "Subha Vivaaha" fits the cream area on phones (it is ~3.6em wide) */
+  font-size: min(clamp(70px, calc(70px + 115 * var(--k)), 185px), 14.4cqw); line-height: 1.2; letter-spacing: -0.04em;
+  white-space: nowrap; word-spacing: 0.18em; /* the script's own space is too tight between the two words */
+}
+.inv-lead {
+  margin: 1.2cqw 0 0; max-width: 34em; text-wrap: balance; font-style: italic; font-family: var(--font-body); font-weight: 400; color: #636361;
+  font-size: clamp(12.5px, calc(12.5px + 11.5 * var(--k)), 24px); line-height: 1.35;
+}
+.inv-lead > span { display: block; text-wrap: balance; } /* each line balances on its own (no lone "of") */
+
+/* ---------- bride & groom (animated by src/anim/names.ts) ---------- */
+.couple { width: 100%; margin: 4.4cqw 0 0; display: flex; flex-direction: column; align-items: center; }
+.couple__block { width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+.couple__flourish { width: clamp(120px, 15cqw, 290px); height: auto; margin: 1.6cqw 0; overflow: visible; }
+.flourish path {
+  fill: none; stroke: #c9973b; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1; stroke-dashoffset: 0;
+}
+
+.couple__name {
+  margin: 0; padding: 0.06em 0 0.04em; overflow: hidden; white-space: nowrap;
+  font-family: var(--font-display); font-weight: 500; text-transform: uppercase;
+  font-size: clamp(27px, 7cqw, 132px); line-height: 1.08; letter-spacing: 0.06em;
+}
+/* longer names (e.g. "NISARGA SHEREGAR") step down a little so the single line always fits */
+.couple__name--long { font-size: clamp(18.5px, 4.9cqw, 92px); }
+.couple__word { display: inline-block; }
+.couple__word + .couple__word { margin-left: 0.3em; }
+.couple__ch {
+  display: inline-block; will-change: transform;
+  background: var(--gold-grad);
+  -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
+}
+
+.couple__parents {
+  margin: 1.5cqw 0 0; display: flex; flex-direction: column; align-items: center; gap: 0.45em;
+  font-family: var(--font-body); color: #55534f;
+  font-size: clamp(12px, calc(12px + 13 * var(--k)), 25px); line-height: 1.25;
+}
+.couple__parents strong { font-weight: 700; text-wrap: balance; }
+.couple__place { font-weight: 400; color: #6c6a66; }
+/* who guides the rituals: a short gold hairline, an italic line, then the names in the parents' weight */
+.couple__guide {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.3em;
+  margin-top: 0.7em; padding-top: 0.85em; max-width: 30em;
+}
+.couple__guide::before {
+  content: ''; position: absolute; top: 0; left: 50%; width: 3.2em; height: 1px; margin-left: -1.6em;
+  background: linear-gradient(90deg, rgba(201, 151, 59, 0), #c9973b, rgba(201, 151, 59, 0));
+}
+.couple__guide-label { font-style: italic; color: #6c6a66; text-wrap: balance; }
+
+.couple__amp { display: flex; align-items: center; justify-content: center; gap: 2.2cqw; width: 100%; margin: 3.2cqw 0 2.6cqw; }
+.couple__and {
+  display: inline-block; font-family: var(--font-script); color: #2986c4;
+  font-size: clamp(34px, calc(34px + 50 * var(--k)), 84px); line-height: 1; padding: 0 0.15em;
+}
+.couple__line { flex: 0 0 clamp(36px, 9cqw, 170px); height: 1px; }
+.couple__line:first-child { background: linear-gradient(to left, #c9973b, rgba(201, 151, 59, 0)); transform-origin: 100% 50%; }
+.couple__line:last-child { background: linear-gradient(to right, #c9973b, rgba(201, 151, 59, 0)); transform-origin: 0 50%; }
+
+.inv-couple {
+  display: block; width: clamp(170px, 24cqw, 460px); height: auto; margin: 0.5cqw auto -15cqw; position: relative; z-index: 1;
+  filter: drop-shadow(0 12px 12px rgba(90, 60, 20, 0.25));
+}
+
+/* hidden start states (only with JS and motion allowed) so nothing flashes before the timelines run */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .couple__ch { opacity: 0; transform: translateY(115%); }
+  html.js .couple__parents,
+  html.js .couple__and,
+  html.js .couple__line,
+  html.js .couple__flourish path { opacity: 0; }
+}
+
+.inv-events {
+  margin: 0; font-family: var(--font-display); font-weight: 700; color: #2a86c4;
+  font-size: clamp(20px, calc(20px + 23 * var(--k)), 43px); line-height: 1.2;
+}
+
+/* narrow pages: the cream area is a bigger share of the width, so let lines use it */
+@container (max-width: 700px) {
+  .archpage__top { padding-top: 24.5cqw; }
+  .inv-blessing { max-width: none; }
+  /* keep the invocation on one line inside the arch cap: tighter tracking, sized to the page width */
+  .inv-mantra { letter-spacing: 0.05em; font-size: 2.45cqw; }
+  .archpage__mid { padding-top: 0; }
+  .inv-script { margin-top: -6cqw; }
+}
+
+/* wide pages: the arch cap leaves a tall empty band under the blessing line, so pull "Invite" up into it */
+@container (min-width: 701px) {
+  .inv-script { margin-top: -15cqw; }
+}

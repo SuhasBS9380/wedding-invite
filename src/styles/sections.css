@@ -1,0 +1,71 @@
+/* ================= shared page-section shell ================= */
+.pg { position: relative; z-index: 3; min-height: 100svh; overflow: hidden; }
+.pg--tile {
+  display: flex; align-items: center; justify-content: center;
+  padding: 6svh 0;
+  background: #b9d3f0 url('/assets/frame2.webp') center / cover no-repeat;
+}
+.pg--center { text-align: center; }
+.script { font-family: var(--font-script); font-weight: 400; margin: 0; }
+
+
+/* ================= arch card (frame 1) ================= */
+.arch { position: relative; width: min(100%, 520px); container-type: inline-size; }
+.arch__img { display: block; width: 100%; height: auto; }
+.arch__body {
+  position: absolute; left: 21%; right: 21%; top: 23%; bottom: 12%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; color: var(--brown);
+}
+.arch__kicker { margin: 0; font-family: var(--font-body); font-style: italic; font-size: 2.9cqw; line-height: 1.35; }
+.arch__script { font-size: 17cqw; line-height: 0.95; color: var(--blue); margin: 0.5cqw 0 1cqw; }
+.arch__script--lg { font-size: 15cqw; }
+.arch__name { font-family: var(--font-serif); font-weight: 500; font-size: 7.4cqw; line-height: 1.05; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-deep); }
+.arch__amp { font-family: var(--font-serif); font-size: 5cqw; line-height: 1.1; color: var(--blue); }
+.arch__when { margin: 2.4cqw 0 0; font-family: var(--font-sans); font-weight: 500; font-size: 2.9cqw; line-height: 1.5; }
+.arch__para { margin: 0 0 2.4cqw; font-family: var(--font-body); font-size: 3.5cqw; line-height: 1.5; }
+.arch .parents { margin-top: 2.6cqw; gap: 2cqw; width: 100%; grid-template-columns: 1fr 1fr; }
+.arch .parents__label { font-size: 2.1cqw; letter-spacing: 0.14em; color: var(--blue); }
+.arch .parents__names { margin-top: 0.8cqw; font-size: 2.4cqw; line-height: 1.35; color: var(--brown); font-weight: 600; }
+
+/* parents grid (shared) */
+.parents { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.parents__label { text-transform: uppercase; font-weight: 700; }
+.parents__names { font-family: var(--font-body); }
+
+/* ================= events ================= */
+.evcard {
+  width: min(88%, 440px); box-sizing: border-box; padding: 10px;
+  background: var(--cream); border-radius: 26px;
+  border: 3px solid var(--gold-deep); outline: 3px solid var(--blue); outline-offset: -9px;
+  box-shadow: 0 18px 50px rgba(10, 30, 70, 0.35);
+}
+.btn--navy { padding: 14px 30px; border-radius: 999px; background: #123a86; color: #fff; }
+.btn--navy:hover { background: var(--gold-deep); color: #fff; }
+
+/* ================= countdown ================= */
+.count {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  padding: 14svh 20px 0; text-align: center; background: #efe0c6 center top / auto 100% no-repeat;
+}
+.count__title { font-size: clamp(46px, 14vw, 78px); line-height: 1; color: #6e1a24; }
+.count__cells { margin-top: 26px; display: flex; gap: clamp(8px, 2.6vw, 18px); }
+.count__cell { width: clamp(62px, 18vw, 84px); }
+.count__num {
+  display: flex; align-items: center; justify-content: center; aspect-ratio: 1; border-radius: 16px;
+  background: #fff; color: #2a2118; font-family: var(--font-sans); font-weight: 600; font-size: clamp(24px, 7vw, 34px);
+  box-shadow: 0 6px 16px rgba(90, 40, 20, 0.22); font-variant-numeric: tabular-nums;
+}
+.count__lab { margin-top: 8px; font-size: 11px; letter-spacing: 0.2em; color: #6e1a24; font-weight: 600; }
+.count__date { margin-top: 18px; font-family: var(--font-serif); font-size: 20px; letter-spacing: 0.16em; text-transform: uppercase; color: #6e1a24; }
+
+/* ================= rsvp ================= */
+.rsvp { padding: 40px 26px 34px; display: flex; flex-direction: column; align-items: center; color: var(--brown); }
+.rsvp__kicker { margin: 0; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--blue); font-weight: 700; }
+.rsvp__title { font-size: clamp(46px, 13vw, 64px); line-height: 1; color: var(--blue); margin: 8px 0 12px; }
+.rsvp__line { margin: 0 0 22px; font-family: var(--font-body); font-size: 20px; line-height: 1.5; }
+.rsvp__call { margin-top: 16px; font-size: 13px; letter-spacing: 0.14em; color: var(--brown); }
+.rsvp__sign { margin: 22px 0 0; font-family: var(--font-serif); font-size: 15px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-deep); }
+.rsvp__top { margin-top: 14px; font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--brown); opacity: 0.75; }
+
+

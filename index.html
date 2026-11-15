@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script>document.documentElement.classList.add("js", "gated")</script>
+    <!-- phones: the very first paint is the soft cloud-white of the opening (not the dark page background) -->
+    <style>@media (max-width: 899px) { html.gated, html.gated body { background: radial-gradient(120% 90% at 50% 42%, #fff 0%, #f3f7fc 45%, #dfe9f5 75%, #c9dbef 100%) fixed; } }</style>
+    <link rel="icon" type="image/webp" href="/assets/monogram.webp" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- the phone's top bar: cloud white for the opening, then it follows the section (src/lib/themeColor.ts) -->
+    <meta name="theme-color" content="#dfe9f5" />
+    <title>Darshan &amp; Nisarga · Wedding Invitation</title>
+    <meta
+      name="description"
+      content="Darshan B. S. with Nisarga Sheregar · Muhurtham on Monday, 14th December 2026, 9:00 AM to 9:06 AM · Veerashaiva Sabha Bhavan, Bhadravathi, Shivamogga."
+    />
+    <meta property="og:title" content="Darshan &amp; Nisarga · Wedding Invitation" />
+    <meta property="og:description" content="Monday, 14th December 2026 · Veerashaiva Sabha Bhavan, Bhadravathi" />
+    <meta property="og:type" content="website" />
+    <!-- link preview card (WhatsApp, Instagram, etc.); crawlers need absolute URLs -->
+    <!-- %SITE_URL% is filled in at build time (vite.config.ts): Netlify's site URL when hosted, localhost in dev -->
+    <meta property="og:url" content="%SITE_URL%/" />
+    <meta property="og:image" content="%SITE_URL%/assets/share-banner.jpg" />
+    <meta property="og:image:secure_url" content="%SITE_URL%/assets/share-banner.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="506" />
+    <meta property="og:image:alt" content="Darshan and Nisarga · Wedding Invitation" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="%SITE_URL%/assets/share-banner.jpg" />
+    <link rel="preload" as="image" href="/assets/sky.webp" />
+    <!-- the opening cloud bank: start downloading every sprite at once (phones get the lighter -sm copies) -->
+    <link rel="preload" as="image" href="/assets/clouds/c4.webp" media="(min-width: 900px)" />
+    <link rel="preload" as="image" href="/assets/clouds/c6.webp" media="(min-width: 900px)" />
+    <link rel="preload" as="image" href="/assets/clouds/c7.webp" media="(min-width: 900px)" />
+    <link rel="preload" as="image" href="/assets/clouds/c1-sm.webp" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/clouds/c2-sm.webp" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/clouds/c3-sm.webp" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/clouds/c4-sm.webp" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/clouds/c5-sm.webp" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/clouds/c6-sm.webp" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/clouds/c7-sm.webp" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/clouds/c8-sm.webp" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/clouds/c9-sm.webp" media="(max-width: 899px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/temple.webp" media="(min-width: 900px)" />
+    <link rel="preload" as="image" href="/assets/temple-md.webp" media="(max-width: 899px)" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
