@@ -27,8 +27,8 @@ export const inviteKn: Invite = {
   joiner: 'ಮತ್ತು',
   bride: {
     prefix: 'ಚಿ॥ ಸೌ॥',
-    name: 'ನಿಸರ್ಗಾ ಶೇರೆಗಾರ',
-    fullName: 'ಚಿ॥ ಸೌ॥ ನಿಸರ್ಗಾ ಶೇರೆಗಾರ',
+    name: 'ನಿಸರ್ಗಾ ಶೆರೆಗಾರ',
+    fullName: 'ಚಿ॥ ಸೌ॥ ನಿಸರ್ಗಾ ಶೆರೆಗಾರ',
     parentsLine: ['ಶ್ರೀಮತಿ ಆಶಾ ಮತ್ತು', 'ಶ್ರೀ ಮೋಹನ ಶೇರೆಗಾರ ಅವರ ಜೇಷ್ಠ ಪುತ್ರಿ'],
     place: 'ಯಾದವಾಡ ಗ್ರಾಮ.',
     guidance: {

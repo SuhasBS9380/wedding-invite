@@ -73,22 +73,55 @@
   font-size: clamp(22px, 5.8cqw, 120px); line-height: 1.12; letter-spacing: 0.05em; text-align: center;
   color: #c21872;
 }
+/* English: Playfair Display Bold Italic with magenta color */
+html[lang="en"] .couple__name {
+  font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic; text-transform: none;
+  color: #c21872;
+}
+/* Kannada: magenta color to match English */
+html[lang="kn"] .couple__name {
+  color: #c21872;
+}
 /* longer names (e.g. "Chi. Sou. Nisarga Sheregar") step down so the single line always fits */
 .couple__name--long { font-size: clamp(15.5px, 4.2cqw, 82px); }
 .couple__prefix {
   display: inline-block; font-size: 0.7em; letter-spacing: 0.08em; margin-right: 0.35em;
   color: #b88a2e; vertical-align: middle;
 }
+/* English: prefix color matches magenta */
+html[lang="en"] .couple__prefix {
+  color: #c21872;
+}
+/* Kannada: prefix color matches magenta */
+html[lang="kn"] .couple__prefix {
+  color: #c21872;
+}
 .couple__word { display: inline-block; }
 .couple__word + .couple__word { margin-left: 0.3em; }
 .couple__ch {
   display: inline-block; will-change: transform;
+}
+/* English: remove gradient, use solid magenta from parent */
+html[lang="en"] .couple__ch {
+  background: none;
+  -webkit-background-clip: unset; background-clip: unset;
+  color: inherit; -webkit-text-fill-color: unset;
+}
+/* Kannada: remove gradient, use solid magenta from parent */
+html[lang="kn"] .couple__ch {
+  background: none;
+  -webkit-background-clip: unset; background-clip: unset;
+  color: inherit; -webkit-text-fill-color: unset;
 }
 
 .couple__parents {
   margin: 1.5cqw 0 0; display: flex; flex-direction: column; align-items: center; gap: 0.45em;
   font-family: 'Goudy Old Style', 'Book Antiqua', Georgia, serif; color: #3B3B3B;
   font-size: clamp(12px, calc(12px + var(--k) * 13), 25px); line-height: 1.25;
+}
+/* English: Goudy Old Style / Book Antiqua with charcoal grey */
+html[lang="en"] .couple__parents {
+  font-family: 'Goudy Old Style', 'Book Antiqua', Georgia, serif; color: #3B3B3B;
 }
 .couple__parents strong { font-weight: 700; text-wrap: balance; }
 .couple__place { font-weight: 400; color: #6c6a66; }

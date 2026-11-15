@@ -152,6 +152,10 @@
   margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic; letter-spacing: 0.06em;
   font-size: var(--nm); line-height: 1; color: var(--white);
 }
+/* English: Playfair Display Bold Italic */
+html[lang="en"] .title h2 {
+  font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic; text-transform: none;
+}
 .hn { display: block; white-space: nowrap; overflow: hidden; padding: 0.06em 0 0.02em; }
 /* longer names step down a little so the single line always fits */
 .hn--long { font-size: min(0.82em, 6.5vw); }
