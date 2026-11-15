@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLang } from '../i18n/lang'
 import { asset } from '../lib/asset'
 import { useAnimeScope } from '../anim/useAnimeScope'
@@ -102,6 +102,98 @@ function Countdown() {
   )
 }
 
+function EventsBanner() {
+  const { lang, invite, t } = useLang()
+  const events = invite.events
+  // Default to Muhurtha (index 2: 14th Dec)
+  const [index, setIndex] = useState(2)
+  const [isPaused, setIsPaused] = useState(false)
+  const pauseTimeout = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (isPaused) return
+    const id = window.setInterval(() => {
+      setIndex((prev) => (prev + 1) % events.length)
+    }, 4200)
+    return () => window.clearInterval(id)
+  }, [isPaused, events.length])
+
+  const selectEvent = (i: number) => {
+    setIndex(i)
+    setIsPaused(true)
+    if (pauseTimeout.current) window.clearTimeout(pauseTimeout.current)
+    pauseTimeout.current = window.setTimeout(() => setIsPaused(false), 9000)
+  }
+
+  const prev = () => selectEvent((index - 1 + events.length) % events.length)
+  const next = () => selectEvent((index + 1) % events.length)
+
+  const ev = events[index]
+
+  return (
+    <TempleBanner side="left" label={t.muhurthamBanner}>
+      <Lotus />
+
+      {/* Switcher Controls */}
+      <div className="bn-events__ctrl" data-s="when">
+        <button
+          type="button"
+          className="bn-events__arrow"
+          onClick={prev}
+          aria-label={lang === 'kn' ? 'ಹಿಂದಿನ ದಿನಾಂಕ' : 'Previous date'}
+        >
+          ‹
+        </button>
+        <div className="bn-events__tabs" role="tablist">
+          {events.map((e, i) => (
+            <button
+              key={e.id}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              className={`bn-events__tab ${i === index ? 'is-active' : ''}`}
+              onClick={() => selectEvent(i)}
+            >
+              <span className="bn-events__tab-tag">{e.tag}</span>
+              <span className="bn-events__tab-badge">{e.badge}</span>
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          className="bn-events__arrow"
+          onClick={next}
+          aria-label={lang === 'kn' ? 'ಮುಂದಿನ ದಿನಾಂಕ' : 'Next date'}
+        >
+          ›
+        </button>
+      </div>
+
+      <i className="bn__rule bn__rule--top" data-s="when" aria-hidden="true" />
+
+      {/* Active Event Slide */}
+      <div className="bn-events__slide-wrap" data-s="when">
+        <div key={ev.id} className="bn-events__slide">
+        <p className="bn__kicker bn-events__title">{ev.title}</p>
+        <p className="bn__day">{ev.day}</p>
+        <p className="bn__num">{ev.dayNum}</p>
+        <p className="bn__month">{ev.monthYear}</p>
+        <i className="bn__rule" aria-hidden="true" />
+        <p className="bn__time">{ev.time}</p>
+        {ev.detail && <p className="bn__lagna">{ev.detail}</p>}
+        {ev.venue && (
+          <p className="bn__lagna bn-events__venue">
+            <span className="bn-events__venue-dot">◆</span> {ev.venue}
+          </p>
+        )}
+        </div>
+      </div>
+
+      <Countdown />
+    </TempleBanner>
+  )
+}
+
 /**
  * Muhurtham scene: a full-width temple canvas you scroll down through. At the end the bride and groom
  * perform the homa at the bottom of the screen, and two silk temple banners unfurl on either side of the
@@ -109,7 +201,7 @@ function Countdown() {
  */
 export function Scene() {
   const { invite, t } = useLang()
-  const { muhurtham: m, venue: v } = invite
+  const { venue: v } = invite
   const ref = useRef<HTMLElement>(null)
   useAnimeScope(ref, setupScene)
   return (
@@ -144,29 +236,7 @@ export function Scene() {
         </div>
 
         <div className="scene__banners">
-          <TempleBanner side="left" label={t.muhurthamBanner}>
-            <Lotus />
-            <p className="bn__kicker" data-s="when">{t.muhurthamBanner}</p>
-            <p className="bn__day" data-s="when">{m.day}</p>
-            <p className="bn__num" data-s="when">{m.dayNum}</p>
-            <p className="bn__month" data-s="when">{m.monthYear}</p>
-            <i className="bn__rule" data-s="when" aria-hidden="true" />
-            <p className="bn__time" data-s="when">
-              {m.timeFrom} <span>–</span> {m.timeTo}
-            </p>
-            {m.lagna && (
-              <>
-                <p className="bn__lagna" data-s="when">
-                  {m.lagna} Lagna
-                </p>
-                <i className="bn__rule bn__rule--sm" data-s="when" aria-hidden="true" />
-              </>
-            )}
-            <p className="bn__lagna bn__feast" data-s="when">
-              {m.feast}
-            </p>
-            <Countdown />
-          </TempleBanner>
+          <EventsBanner />
 
           <TempleBanner side="right" label={t.venue}>
             <Gopuram />

@@ -58,6 +58,35 @@
   display: block; pointer-events: none;
 }
 
+/* ---------- circular image carousel in the center of the temple ---------- */
+.hero__circle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(120px, 16vw, 220px);
+  height: clamp(120px, 16vw, 220px);
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 5;
+  box-shadow: 0 6px 20px rgba(6, 40, 110, 0.35), 0 0 0 3px rgba(201, 151, 59, 0.7);
+  background: #fffaf0;
+}
+
+.hero__circle-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.hero__circle-img.is-active {
+  opacity: 1;
+}
+
 /* swipe-up hint: three gold chevrons (a light runs up them, src/anim/hero.ts) over a cream pill.
    Sits above the music button's row so the two never meet. */
 .hero__cue {
@@ -119,8 +148,21 @@
   font-size: var(--nm); line-height: 1; color: var(--white);
 }
 .hn { display: block; white-space: nowrap; overflow: hidden; padding: 0.06em 0 0.02em; }
-/* longer names (e.g. "DARSHAN B. S.") step down a little so the single line always fits */
-.hn--long { font-size: min(0.82em, 6.8vw); }
+/* longer names step down a little so the single line always fits */
+.hn--long { font-size: min(0.82em, 6.5vw); }
+.hn__prefix {
+  display: inline-block;
+  font-size: 0.62em;
+  letter-spacing: 0.06em;
+  margin-right: 0.28em;
+  vertical-align: 0.15em;
+  color: #f6d584;
+  opacity: 0.95;
+}
+@media (max-width: 599px) {
+  .hn { font-size: min(var(--nm), 6.2vw); }
+  .hn--long { font-size: min(0.78em, 5.4vw); }
+}
 .hn__word { display: inline-block; }
 .hn__word + .hn__word { margin-left: 0.28em; }
 .hn__ch { display: inline-block; will-change: transform; text-shadow: 0 2px 18px rgba(6, 40, 110, 0.45); }
@@ -154,6 +196,7 @@
 /* hidden start states for the intro (only with JS and motion allowed); src/anim/hero.ts plays them in */
 @media (prefers-reduced-motion: no-preference) {
   html.js .hn__ch { opacity: 0; transform: translateY(110%); }
+  html.js .hn__prefix,
   html.js .title__weds em,
   html.js .title__line,
   html.js .title__flourish path { opacity: 0; }

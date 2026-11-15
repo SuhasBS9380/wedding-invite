@@ -1,4 +1,5 @@
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
+import type { Invite } from '../data/invite'
 import { useLang } from '../i18n/lang'
 import { asset } from '../lib/asset'
 import { useAnimeScope } from '../anim/useAnimeScope'
@@ -6,26 +7,53 @@ import { setupHeroIntro, setupHeroScroll } from '../anim/hero'
 import { Flourish } from '../components/Flourish'
 import { isPhone } from '../anim/motion'
 
+const CIRCLE_IMAGES = ['/assets/circle-1.jpg', '/assets/circle-2.jpg']
+
+/** Circular image carousel in the center of the temple, auto-rotating every 3 seconds */
+function CircleCarousel() {
+  const [index, setIndex] = useState(0)
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setIndex((prev) => (prev + 1) % CIRCLE_IMAGES.length)
+    }, 3000)
+    return () => window.clearInterval(id)
+  }, [])
+  return (
+    <div className="hero__circle">
+      {CIRCLE_IMAGES.map((src, i) => (
+        <img
+          key={src}
+          src={src}
+          alt=""
+          className={`hero__circle-img ${i === index ? 'is-active' : ''}`}
+        />
+      ))}
+    </div>
+  )
+}
+
 /**
  * A name as letters, so Anime.js can raise them one by one. The first letter of the name and its
  * initials ("A.", "R.") are gold.
  */
-function HeroName({ text }: { text: string }) {
+function HeroName({ person }: { person: Invite['groom'] }) {
   const { lang } = useLang()
   // Kannada is written in connected clusters, so it stays one piece: the whole name rises in as a single unit
   // (the letter-by-letter split would break the glyphs apart).
   if (lang === 'kn') {
     return (
-      <span className="hn hn--kn" aria-label={text}>
+      <span className="hn hn--kn" aria-label={person.fullName}>
         <span className="hn__word" aria-hidden="true">
-          <span className="hn__ch">{text}</span>
+          {person.prefix && <span className="hn__prefix">{person.prefix} </span>}
+          <span className="hn__ch">{person.name}</span>
         </span>
       </span>
     )
   }
   return (
-    <span className={`hn${text.length > 12 ? ' hn--long' : ''}`} aria-label={text}>
-      {text.split(' ').map((word, w) => (
+    <span className={`hn${person.name.length > 12 ? ' hn--long' : ''}`} aria-label={person.fullName}>
+      {person.prefix && <span className="hn__prefix">{person.prefix} </span>}
+      {person.name.split(' ').map((word, w) => (
         <span className="hn__word" key={w} aria-hidden="true">
           {[...word].map((ch, i) => (
             <span className={`hn__ch${i === 0 || word.length <= 2 ? ' hn__ch--gold' : ''}`} key={i}>
@@ -80,13 +108,13 @@ export function Hero() {
               style={{ WebkitMaskImage: mono, maskImage: mono }}
             />
             <h2>
-              <HeroName text={invite.groom.name} />
+              <HeroName person={invite.groom} />
               <span className="title__weds">
                 <i className="title__line" />
                 <em>{invite.heroJoiner}</em>
                 <i className="title__line" />
               </span>
-              <HeroName text={invite.bride.name} />
+              <HeroName person={invite.bride} />
             </h2>
             <Flourish className="title__flourish" />
             <div data-intro className="title__sub">
@@ -107,6 +135,8 @@ export function Hero() {
               <source media="(max-width: 899px)" srcSet={asset('assets/trees-md.webp')} />
               <img className="trees" src={asset('assets/trees.webp')} alt="" decoding="async" />
             </picture>
+            {/* Circular image carousel in the center of the temple */}
+            <CircleCarousel />
           </div>
         </div>
 

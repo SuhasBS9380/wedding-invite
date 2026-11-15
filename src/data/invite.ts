@@ -1,54 +1,95 @@
 // Single source of truth for every piece of invite content.
 // Wording follows the family's printed invitation card word for word.
 
-// TODO(user): the card has no contact number printed for the invite; add it here if the
-// call/WhatsApp buttons (src/parked/Rsvp.tsx) are ever switched back on.
-const phone: string = ''
+// Contact numbers printed on the front cover of the wedding card
+const phone: string = '9901744512'
 
 export const invite = {
-  invocation: 'II Sri Lakshmi Venkateshwara Swamy Prasanna II',
+  invocation: '|| Sri Lakshmi Venkateshwara Swamy Prasanna ||',
   // opening screen: "<groom> & <bride>" and the line under the names
   heroJoiner: '&',
   heroLine: 'Invite you to celebrate their wedding',
   inviteTitle: 'Shubha Vivaha',
-  inviteLead: 'Together with our families,',
+  inviteLead: 'With the blessings of our elders,',
   inviteLine:
-    'we solicit your gracious presence with family & friends on the auspicious occasion of the marriage of',
+    'we solicit your gracious presence with family & friends on the auspicious occasion of the marriage of our beloved son',
   groom: {
-    name: 'Darshan B. S.',
-    parentsLine: ['S/o. Sri Late Srinivas &', 'Smt. Geetha'],
-    place: 'Bhadravathi',
+    prefix: 'Chi. Ry.',
+    name: 'Darshan B.S.',
+    fullName: 'Chi. Ry. Darshan B.S.',
+    parentsLine: ['Sri Late Srinivas &', 'Smt. Geetha'],
+    place: 'Bhadravathi.',
     guidance: {
       label: 'With the blessings of:',
-      names: 'Smt. Late Shanthamma & Sri Late Rangappa · Smt. Dhanya & Sri Ambarish C.',
+      names: 'Smt. Late Shanthamma & Sri Late Rangappa · Smt. Dhanya & Sri Ambarish C. · Ku. Ihanvi & Ku. Prananvi',
     },
   },
   joiner: 'with',
   bride: {
+    prefix: 'Chi. Sou.',
     name: 'Nisarga Sheregar',
+    fullName: 'Chi. Sou. Nisarga Sheregar',
     parentsLine: ['Elder D/o. Smt. Asha &', 'Sri Mohan Sheregar'],
-    place: 'Yadwad Village',
+    place: 'Yadwad Village.',
     guidance: {
       label: 'Chappara Devathakarya:',
-      names: '11th December 2026, Friday · Hebbagodi, Bengaluru',
+      names: '11-12-2026, Friday, Venue : Hebbagodi, Bangalore.',
     },
   },
   coupleShort: 'Darshan & Nisarga',
 
+  events: [
+    {
+      id: 'chappara',
+      tag: '11 Dec',
+      badge: 'Chappara',
+      title: 'Chappara Devathakarya',
+      day: 'Friday',
+      dayNum: '11',
+      monthYear: 'December 2026',
+      time: 'Devathakarya',
+      detail: 'Traditional Rituals',
+      venue: 'Hebbagodi, Bangalore',
+    },
+    {
+      id: 'reception',
+      tag: '13 Dec',
+      badge: 'Reception',
+      title: 'Reception',
+      day: 'Sunday',
+      dayNum: '13',
+      monthYear: 'December 2026',
+      time: '07:00 PM Onwards',
+      detail: 'Dinner & Blessings',
+      venue: 'Veerashaiva Sabha Bhavan',
+    },
+    {
+      id: 'muhurtham',
+      tag: '14 Dec',
+      badge: 'Muhurtha',
+      title: 'Vivah Muhurtha',
+      day: 'Monday',
+      dayNum: '14',
+      monthYear: 'December 2026',
+      time: '09:00 to 09:06 AM',
+      detail: 'Dhanur Lagna',
+      venue: 'Veerashaiva Sabha Bhavan',
+    },
+  ],
+
   muhurtham: {
-    title: 'Muhurtham',
+    title: 'Vivah Muhurtha',
     date: '14th December 2026, Monday',
     dateShort: '14th December 2026',
-    time: '9:00 AM to 9:06 AM',
+    time: '09:00 to 09:06 AM',
     // the banner's date lockup
     day: 'Monday',
     dayNum: '14',
     monthYear: 'December 2026',
-    timeFrom: '9:00 AM',
-    timeTo: '9:06 AM',
-    feast: 'Reception · 13th Dec, 7 PM onwards',
-    // the printed card does not give a lagna; shows only when filled in
-    lagna: '',
+    timeFrom: '09:00 AM',
+    timeTo: '09:06 AM',
+    feast: 'Reception · 13th Dec, 07:00 PM onwards',
+    lagna: 'Dhanur',
   },
   /** Countdown target (IST). */
   weddingStart: '2026-12-14T09:00:00+05:30',
@@ -57,12 +98,21 @@ export const invite = {
 
   venue: {
     nameLines: ['Veerashaiva Sabha', 'Bhavan'],
-    address: ['Near Suk Office, Bhadravathi Taluk,', 'Shivamogga Dist., Karnataka'],
+    address: ['Near Taluk Office, Bhadravathi Taluk,', 'Shivamogga Dist.'],
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Veerashaiva+Sabha+Bhavan+Bhadravathi+Shivamogga',
     qr: 'assets/venue-qr.png',
   },
 
-  phoneDisplay: phone,
+  compliments: {
+    label: 'With Best Compliments From:',
+    names: [
+      'Smt. Late Shanthamma & Sons, Smt. Late Subadramma & Sons,',
+      'Smt. Gangamma & sons (Sagar),',
+      'Badami Family, Balija Relatives & Friends',
+    ],
+  },
+
+  phoneDisplay: '9901744512 / 9900603982',
   telUrl: phone ? `tel:+91${phone}` : '',
   waUrl: phone
     ? `https://wa.me/91${phone}?text=` +
@@ -98,7 +148,6 @@ export const invite = {
   },
 
   /** Private guest log: the Google Apps Script web-app URL (scripts/guest-log.gs). Empty = off. */
-  // the old log belongs to the previous wedding, so it stays off until a new sheet is created
   trackUrl: '',
 }
 

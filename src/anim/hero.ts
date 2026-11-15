@@ -113,7 +113,23 @@ export function setupHeroIntro({ root, scroller }: AnimeCtx) {
   /** letters of one name: rise + converge from a wider tracking + focus (blur only on the plain letters) */
   const nameIn = (tl: ReturnType<typeof createTimeline>, name: Element, at: number) => {
     const chars = [...name.querySelectorAll<HTMLElement>('.hn__ch')]
+    const prefix = name.querySelector<HTMLElement>('.hn__prefix')
     const mid = (chars.length - 1) / 2
+    if (prefix) {
+      if (phone) {
+        phoneIntro.push(() => {
+          prefix.animate(
+            [
+              { transform: 'translateY(10px)', opacity: 0 },
+              { transform: 'translateY(0)', opacity: 1 },
+            ],
+            { duration: 1200, delay: at, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' },
+          )
+        })
+      } else {
+        tl.add(prefix, { opacity: [0, 1], y: [10, 0], duration: 1200, ease: 'out(3)' }, at)
+      }
+    }
     if (phone) {
       // each letter rises out of its mask, drifting in from a wider spacing and settling from a hair larger;
       // the centre letters lead, the ends follow (same choreography as on laptops, minus the blur)

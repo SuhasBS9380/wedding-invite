@@ -1,8 +1,8 @@
 /* Edge-to-edge temple arch: cap + repeating pillar tile + base.
-   Typography replicates theartfulinvitesdemo02.framer.website (measured at 390px and 1905px wide);
-   sizes interpolate fluidly between those two widths. Spacing is in cqw of the page width. */
+   Typography replicates the printed wedding card, scaled fluidly across screen widths.
+   Spacing is in cqw of the page width. */
 .archpage {
-  --k: calc((100cqw - 390px) / 1515);          /* 0 at 390px wide → 1 at 1905px wide */
+  --k: calc((100cqw - 390px) / 1515);          /* 0px at 390px wide → 1px at 1905px wide */
   position: relative; z-index: 3; width: 100%;
   container-type: inline-size;
   background: #f3ece0;
@@ -32,30 +32,30 @@
 }
 .archpage__top, .archpage__mid, .archpage__bottom { text-align: center; }
 
-/* ---------- invite copy (font / size / colour from the reference) ---------- */
+/* ---------- invite copy (font / size / colour from the card) ---------- */
 .inv-logo { width: clamp(64px, 8.5cqw, 170px); height: auto; display: block; }
 
 .inv-mantra {
   margin: 1cqw 0 0; font-family: var(--font-label); font-weight: 500; color: #c9588d; text-transform: uppercase;
-  font-size: clamp(10px, calc(10px + 6 * var(--k)), 16px); letter-spacing: 0.24em; line-height: 1.4;
+  font-size: clamp(10px, calc(10px + var(--k) * 6), 16px); letter-spacing: 0.24em; line-height: 1.4;
   white-space: nowrap; /* the invocation is always one line */
 }
 .inv-blessing {
   margin: 4.7cqw 0 0; max-width: 31cqw;
   font-family: var(--font-body); font-weight: 400; color: #636361;
-  font-size: clamp(12.5px, calc(12.5px + 15.5 * var(--k)), 28px); line-height: 1.2;
+  font-size: clamp(12.5px, calc(12.5px + var(--k) * 15.5), 28px); line-height: 1.2;
 }
 .inv-script {
   margin: 0; font-family: var(--font-script); font-weight: 400; color: #2986c4;
   /* one line: capped so "Subha Vivaaha" fits the cream area on phones (it is ~3.6em wide) */
-  font-size: min(clamp(70px, calc(70px + 115 * var(--k)), 185px), 14.4cqw); line-height: 1.2; letter-spacing: -0.04em;
+  font-size: min(clamp(56px, calc(56px + var(--k) * 115), 185px), 14.4cqw); line-height: 1.2; letter-spacing: -0.04em;
   white-space: nowrap; word-spacing: 0.18em; /* the script's own space is too tight between the two words */
 }
 .inv-lead {
   margin: 1.2cqw 0 0; max-width: 34em; text-wrap: balance; font-style: italic; font-family: var(--font-body); font-weight: 400; color: #636361;
-  font-size: clamp(12.5px, calc(12.5px + 11.5 * var(--k)), 24px); line-height: 1.35;
+  font-size: clamp(12.5px, calc(12.5px + var(--k) * 11.5), 24px); line-height: 1.35;
 }
-.inv-lead > span { display: block; text-wrap: balance; } /* each line balances on its own (no lone "of") */
+.inv-lead > span { display: block; text-wrap: balance; } /* each line balances on its own */
 
 /* ---------- bride & groom (animated by src/anim/names.ts) ---------- */
 .couple { width: 100%; margin: 4.4cqw 0 0; display: flex; flex-direction: column; align-items: center; }
@@ -68,24 +68,35 @@
 }
 
 .couple__name {
-  margin: 0; padding: 0.06em 0 0.04em; overflow: hidden; white-space: nowrap;
+  margin: 0; padding: 0.06em 0 0.04em; overflow: hidden; white-space: nowrap; max-width: 100%; box-sizing: border-box;
   font-family: var(--font-display); font-weight: 500; text-transform: uppercase;
-  font-size: clamp(27px, 7cqw, 132px); line-height: 1.08; letter-spacing: 0.06em;
+  font-size: clamp(22px, 5.8cqw, 120px); line-height: 1.12; letter-spacing: 0.05em; text-align: center;
 }
-/* longer names (e.g. "NISARGA SHEREGAR") step down a little so the single line always fits */
-.couple__name--long { font-size: clamp(18.5px, 4.9cqw, 92px); }
+/* longer names (e.g. "Chi. Sou. Nisarga Sheregar") step down so the single line always fits */
+.couple__name--long { font-size: clamp(15.5px, 4.2cqw, 82px); }
+.couple__prefix {
+  display: inline-block; font-size: 0.7em; letter-spacing: 0.08em; margin-right: 0.35em;
+  color: #b88a2e; vertical-align: middle;
+}
 .couple__word { display: inline-block; }
 .couple__word + .couple__word { margin-left: 0.3em; }
 .couple__ch {
   display: inline-block; will-change: transform;
-  background: var(--gold-grad);
-  -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
+  /* solid gold first: if background-clip:text is unsupported the names stay highlighted */
+  color: #b8862c;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .couple__ch {
+    background: var(--gold-grad);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent; -webkit-text-fill-color: transparent;
+  }
 }
 
 .couple__parents {
   margin: 1.5cqw 0 0; display: flex; flex-direction: column; align-items: center; gap: 0.45em;
   font-family: var(--font-body); color: #55534f;
-  font-size: clamp(12px, calc(12px + 13 * var(--k)), 25px); line-height: 1.25;
+  font-size: clamp(12px, calc(12px + var(--k) * 13), 25px); line-height: 1.25;
 }
 .couple__parents strong { font-weight: 700; text-wrap: balance; }
 .couple__place { font-weight: 400; color: #6c6a66; }
@@ -103,11 +114,25 @@
 .couple__amp { display: flex; align-items: center; justify-content: center; gap: 2.2cqw; width: 100%; margin: 3.2cqw 0 2.6cqw; }
 .couple__and {
   display: inline-block; font-family: var(--font-script); color: #2986c4;
-  font-size: clamp(34px, calc(34px + 50 * var(--k)), 84px); line-height: 1; padding: 0 0.15em;
+  font-size: clamp(34px, calc(34px + var(--k) * 50), 84px); line-height: 1; padding: 0 0.15em;
 }
 .couple__line { flex: 0 0 clamp(36px, 9cqw, 170px); height: 1px; }
 .couple__line:first-child { background: linear-gradient(to left, #c9973b, rgba(201, 151, 59, 0)); transform-origin: 100% 50%; }
 .couple__line:last-child { background: linear-gradient(to right, #c9973b, rgba(201, 151, 59, 0)); transform-origin: 0 50%; }
+
+/* compliments section matching the printed card bottom */
+.inv-compliments {
+  margin: 3.5cqw 0 1.5cqw; display: flex; flex-direction: column; align-items: center; gap: 0.35em;
+  font-family: var(--font-body); color: #55534f; text-align: center; max-width: 32em;
+}
+.inv-compliments__label {
+  margin: 0; font-weight: 700; font-size: clamp(12px, calc(12px + var(--k) * 8), 20px);
+  color: #2986c4;
+}
+.inv-compliments__names { display: flex; flex-direction: column; gap: 0.25em; align-items: center; }
+.inv-compliments__line {
+  font-size: clamp(11.5px, calc(11.5px + var(--k) * 6.5), 18px); line-height: 1.4; color: #636361;
+}
 
 .inv-couple {
   display: block; width: clamp(170px, 24cqw, 460px); height: auto; margin: 0.5cqw auto -15cqw; position: relative; z-index: 1;
@@ -117,6 +142,7 @@
 /* hidden start states (only with JS and motion allowed) so nothing flashes before the timelines run */
 @media (prefers-reduced-motion: no-preference) {
   html.js .couple__ch { opacity: 0; transform: translateY(115%); }
+  html.js .couple__prefix,
   html.js .couple__parents,
   html.js .couple__and,
   html.js .couple__line,
@@ -125,7 +151,7 @@
 
 .inv-events {
   margin: 0; font-family: var(--font-display); font-weight: 700; color: #2a86c4;
-  font-size: clamp(20px, calc(20px + 23 * var(--k)), 43px); line-height: 1.2;
+  font-size: clamp(20px, calc(20px + var(--k) * 23), 43px); line-height: 1.2;
 }
 
 /* narrow pages: the cream area is a bigger share of the width, so let lines use it */
@@ -136,6 +162,9 @@
   .inv-mantra { letter-spacing: 0.05em; font-size: 2.45cqw; }
   .archpage__mid { padding-top: 0; }
   .inv-script { margin-top: -6cqw; }
+  .couple__name { font-size: clamp(14.5px, 4.2cqw, 24px); }
+  .couple__name--long { font-size: clamp(11.5px, 3.3cqw, 19px); }
+  .couple__prefix { font-size: 0.72em; margin-right: 0.25em; }
 }
 
 /* wide pages: the arch cap leaves a tall empty band under the blessing line, so pull "Invite" up into it */

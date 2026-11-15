@@ -8,21 +8,23 @@ import { setupNames } from '../anim/names'
 import { Flourish } from '../components/Flourish'
 
 /** A name split into letters so Anime.js can raise them one by one (src/anim/names.ts). */
-function Name({ text }: { text: string }) {
+function Name({ person }: { person: Invite['groom'] }) {
   const { lang } = useLang()
   // Kannada stays one piece (connected glyphs); the whole name rises in together (src/anim/names.ts).
   if (lang === 'kn') {
     return (
-      <h3 className="couple__name couple__name--kn" aria-label={text}>
+      <h3 className="couple__name couple__name--kn" aria-label={person.fullName}>
+        {person.prefix && <span className="couple__prefix">{person.prefix} </span>}
         <span className="couple__word" aria-hidden="true">
-          <span className="couple__ch">{text}</span>
+          <span className="couple__ch">{person.name}</span>
         </span>
       </h3>
     )
   }
   return (
-    <h3 className={`couple__name${text.length > 12 ? ' couple__name--long' : ''}`} aria-label={text}>
-      {text.split(' ').map((word, i) => (
+    <h3 className={`couple__name${person.name.length > 12 ? ' couple__name--long' : ''}`} aria-label={person.fullName}>
+      {person.prefix && <span className="couple__prefix">{person.prefix} </span>}
+      {person.name.split(' ').map((word, i) => (
         <span className="couple__word" key={i} aria-hidden="true">
           {[...word].map((ch, j) => (
             <span className="couple__ch" key={j}>
@@ -37,7 +39,7 @@ function Name({ text }: { text: string }) {
 
 function Details({ person }: { person: Invite['groom'] }) {
   return (
-    <p className="couple__parents">
+    <div className="couple__parents">
       <strong>
         {person.parentsLine[0]}
         <br />
@@ -48,7 +50,7 @@ function Details({ person }: { person: Invite['groom'] }) {
         <span className="couple__guide-label">{person.guidance.label}</span>
         <strong>{person.guidance.names}</strong>
       </span>
-    </p>
+    </div>
   )
 }
 
@@ -73,15 +75,15 @@ export function InviteCard() {
       <h2 className="inv-script" data-anim>
         {invite.inviteTitle}
       </h2>
-      <p className="inv-lead" data-anim>
+      <div className="inv-lead" data-anim>
         <span>{invite.inviteLead}</span>
         <span>{invite.inviteLine}</span>
-      </p>
+      </div>
 
       <div className="couple">
         <div className="couple__block" data-couple>
           <Flourish className="couple__flourish" />
-          <Name text={invite.groom.name} />
+          <Name person={invite.groom} />
           <Details person={invite.groom} />
         </div>
 
@@ -92,11 +94,24 @@ export function InviteCard() {
         </div>
 
         <div className="couple__block" data-couple>
-          <Name text={invite.bride.name} />
+          <Name person={invite.bride} />
           <Details person={invite.bride} />
           <Flourish className="couple__flourish" />
         </div>
       </div>
+
+      {invite.compliments && (
+        <div className="inv-compliments" data-anim>
+          <p className="inv-compliments__label">{invite.compliments.label}</p>
+          <div className="inv-compliments__names">
+            {invite.compliments.names.map((line, i) => (
+              <span key={i} className="inv-compliments__line">
+                {line}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* the couple exchanging garlands, in the cream space above the temple base */}
       <img

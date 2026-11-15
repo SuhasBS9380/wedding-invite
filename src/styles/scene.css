@@ -165,6 +165,130 @@
 .cd__dot { width: 4px; height: 4px; margin-top: 13px; background: #d9b768; transform: rotate(45deg); }
 .banner__body .cd--done { display: block; font: italic 500 17px/1.2 var(--font-display); color: #fff3d6; }
 
+/* ---------- switching controls & carousel on left banner ---------- */
+.bn-events__ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  margin-top: 6px;
+}
+.bn-events__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(214, 164, 67, 0.6);
+  background: rgba(94, 12, 23, 0.75);
+  color: #f6d584;
+  font-size: 19px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.bn-events__arrow:hover {
+  background: #f6d584;
+  color: #5e0c17;
+  border-color: #f6d584;
+  transform: scale(1.08);
+}
+.bn-events__arrow:active {
+  transform: scale(0.95);
+}
+
+.bn-events__tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(30, 4, 8, 0.45);
+  padding: 3px 5px;
+  border-radius: 999px;
+  border: 1px solid rgba(214, 164, 67, 0.35);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.bn-events__tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: rgba(251, 240, 217, 0.72);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.bn-events__tab:hover {
+  color: #fff;
+  background: rgba(214, 164, 67, 0.2);
+}
+.bn-events__tab.is-active {
+  background: linear-gradient(180deg, #fcedba 0%, #d6a443 60%, #9a6d1c 100%);
+  color: #4a0810;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+.bn-events__tab-tag {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+}
+.bn-events__tab-badge {
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1;
+  opacity: 0.85;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.bn-events__tab.is-active .bn-events__tab-badge {
+  opacity: 1;
+  color: #5e0c17;
+  font-weight: 700;
+}
+
+.bn__rule--top {
+  margin: 12px 0 10px;
+}
+.bn-events__slide {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: bn-slide-fade 0.32s ease-out;
+}
+@keyframes bn-slide-fade {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.bn-events__title {
+  margin: 2px 0 0;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  color: #fcedba;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.bn-events__venue {
+  margin-top: 5px;
+  font-size: 11px;
+  color: #fce7b2;
+  opacity: 0.95;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+}
+.bn-events__venue-dot {
+  color: #d6a443;
+  font-size: 8px;
+  vertical-align: 1px;
+}
+
 .banner__body .bn__place { margin-top: 22px; font: 600 31px/1.12 var(--font-display); color: #fff6e2; text-wrap: balance; }
 .banner__body .bn__addr { margin-top: 13px; font: 400 16px/1.45 var(--font-body); color: #edd9b3; text-wrap: balance; }
 /* the address is always its two lines (on narrow phones one long line ran into the gold border) */
@@ -253,7 +377,8 @@
 html.js .banner__rod { opacity: 0; }
 html.js .banner__roll { transform: translateY(-101%); }
 
-html.js .scene [data-s] { opacity: 0; }
+/* NOTE: do NOT set opacity:0 on [data-s] here — if the anime.js timeline
+   fails to run, the dates/countdown would stay invisible forever. */
 /* each line that fades in is its own small layer, so its fade never repaints the banner under it;
    the countdown too (it changes every minute) */
 .scene [data-s], .banner__body .cd { will-change: transform, opacity; }
@@ -289,20 +414,28 @@ html.js .scene [data-s] { opacity: 0; }
   .banner__zari { --pt: 16px; inset: 13px 6px 5px; }
   .banner__rod { height: 7px; }
   .banner__motif { width: 34px; margin-bottom: 8px; }
-  .bn__kicker { font-size: 8px; letter-spacing: 0.2em; }
-  .banner__body .bn__day { margin-top: 10px; font-size: 9px; letter-spacing: 0.28em; }
-  .banner__body .bn__num { font-size: 54px; }
-  .banner__body .bn__month { margin-top: 6px; font-size: 12px; letter-spacing: 0.14em; }
-  .bn__rule { margin: 13px 0 11px; }
+  .bn-events__ctrl { margin-top: 4px; gap: 0; overflow: hidden; }
+  .bn-events__arrow { display: none; }
+  .bn-events__tabs { padding: 2px 1px; gap: 1px; max-width: 100%; }
+  .bn-events__tab { padding: 2px 3px; }
+  .bn-events__tab-tag { font-size: 8px; }
+  .bn-events__tab-badge { font-size: 6px; }
+  .bn-events__title { font-size: 8px; letter-spacing: 0.08em; }
+  .bn-events__venue { font-size: 8px; margin-top: 3px; }
+  .bn__rule--top { margin: 6px 0 5px; }
+  .bn__kicker { font-size: 9.5px; letter-spacing: 0.16em; }
+  .banner__body .bn__day { margin-top: 8px; font-size: 10px; letter-spacing: 0.22em; }
+  .banner__body .bn__num { font-size: 48px; }
+  .banner__body .bn__month { margin-top: 4px; font-size: 12px; letter-spacing: 0.12em; }
+  .bn__rule { margin: 10px 0 9px; }
   .banner__body .bn__time { font-size: 15px; }
-  .banner__body .bn__lagna { margin-top: 7px; font-size: 8px; letter-spacing: 0.22em; }
-  .bn__rule--sm { margin: 10px 0 8px; }
-  .banner__body .bn__feast { margin-top: 0; }
-  .banner__body .cd { gap: 5px; margin-top: 14px; padding-top: 11px; }
+  .banner__body .bn__lagna { margin-top: 6px; font-size: 9.5px; letter-spacing: 0.14em; }
+  .bn__rule--sm { margin: 8px 0 6px; }
+  .banner__body .bn__feast { margin-top: 2px; font-size: 9.5px; }
+  .banner__body .cd { gap: 6px; margin-top: 12px; padding-top: 9px; }
   .cd__unit { min-width: 28px; }
-  .cd__lab { margin-top: 5px; }
+  .cd__lab { margin-top: 4px; font-size: 8px; letter-spacing: 0.1em; }
   .cd__num { font-size: 15px; }
-  .cd__lab { font-size: 6.5px; letter-spacing: 0.16em; }
   .cd__dot { margin-top: 6px; width: 2px; height: 2px; }
   .banner__body .bn__day { margin-top: 12px; }
   .banner__body .bn__place { margin-top: 12px; font-size: clamp(12.5px, 3.9vw, 14.5px); line-height: 1.15; }

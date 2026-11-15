@@ -19,6 +19,7 @@ export function setupNames({ root, scroller }: AnimeCtx) {
   root.querySelectorAll<HTMLElement>('[data-couple]').forEach((el) => {
     const tl = createTimeline({ autoplay: false, defaults: { ease: 'out(4)' } })
     const chars = el.querySelectorAll('.couple__ch')
+    const prefix = el.querySelector('.couple__prefix')
     const flourish = el.querySelector('.couple__flourish path')
     const parents = el.querySelector('.couple__parents')
     const and = el.querySelector('.couple__and')
@@ -28,6 +29,9 @@ export function setupNames({ root, scroller }: AnimeCtx) {
 
     if (flourish && !flourishLast) {
       tl.add(flourish, { strokeDashoffset: [1, 0], opacity: [0, 1], duration: 900, ease: 'inOut(3)' }, 0)
+    }
+    if (prefix) {
+      tl.add(prefix, { opacity: [0, 1], y: [10, 0], duration: 800 }, flourish && !flourishLast ? 200 : 0)
     }
     if (chars.length) {
       tl.add(
@@ -41,9 +45,12 @@ export function setupNames({ root, scroller }: AnimeCtx) {
         },
         flourish && !flourishLast ? 250 : 0,
       )
-      // a glint travelling across the letters once they have landed
+      // a glint travelling across the letters once they have landed.
+      // It runs on the word wrappers, not on .couple__ch: a filter on the same element that uses
+      // background-clip:text can break the gold text clipping in some browsers.
+      const words = el.querySelectorAll('.couple__word')
       tl.add(
-        chars,
+        words.length ? words : chars,
         {
           filter: ['brightness(1)', 'brightness(1.45)', 'brightness(1)'],
           duration: 700,
