@@ -87,6 +87,11 @@
   opacity: 1;
 }
 
+/* Second image: position higher to show more of it */
+.hero__circle-img:nth-child(2) {
+  object-position: center 30%;
+}
+
 /* swipe-up hint: three gold chevrons (a light runs up them, src/anim/hero.ts) over a cream pill.
    Sits above the music button's row so the two never meet. */
 .hero__cue {
