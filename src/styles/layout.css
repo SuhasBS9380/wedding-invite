@@ -149,7 +149,7 @@
   -webkit-mask-position: center; mask-position: center;
 }
 .title h2 {
-  margin: 0; font-family: var(--font-display); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em;
+  margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; font-style: italic; letter-spacing: 0.06em;
   font-size: var(--nm); line-height: 1; color: var(--white);
 }
 .hn { display: block; white-space: nowrap; overflow: hidden; padding: 0.06em 0 0.02em; }
@@ -173,9 +173,6 @@
 .hn__ch { display: inline-block; will-change: transform; text-shadow: 0 2px 18px rgba(6, 40, 110, 0.45); }
 .hn__ch--gold {
   font-size: 1.14em; line-height: 0.88; text-shadow: none;
-  background: var(--gold-sky); -webkit-background-clip: text; background-clip: text;
-  color: transparent; -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 10px rgba(6, 40, 110, 0.4));
 }
 .title__weds { display: flex; align-items: center; justify-content: center; gap: 0.22em; margin: calc(var(--nm) * 0.06) 0 calc(var(--nm) * 0.1); }
 .title__weds em {
