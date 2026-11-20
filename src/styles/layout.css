@@ -58,40 +58,6 @@
   display: block; pointer-events: none;
 }
 
-/* ---------- circular image carousel in the center of the temple ---------- */
-.hero__circle {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: clamp(120px, 16vw, 220px);
-  height: clamp(120px, 16vw, 220px);
-  border-radius: 50%;
-  overflow: hidden;
-  z-index: 5;
-  box-shadow: 0 6px 20px rgba(6, 40, 110, 0.35), 0 0 0 3px rgba(201, 151, 59, 0.7);
-  background: #fffaf0;
-}
-
-.hero__circle-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.6s ease-in-out;
-}
-
-.hero__circle-img.is-active {
-  opacity: 1;
-}
-
-/* Second image: position higher to show more of it */
-.hero__circle-img:nth-child(2) {
-  object-position: center 30%;
-}
-
 /* swipe-up hint: three gold chevrons (a light runs up them, src/anim/hero.ts) over a cream pill.
    Sits above the music button's row so the two never meet. */
 .hero__cue {

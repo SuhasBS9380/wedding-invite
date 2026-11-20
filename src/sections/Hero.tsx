@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef } from 'react'
 import type { Invite } from '../data/invite'
 import { useLang } from '../i18n/lang'
 import { asset } from '../lib/asset'
@@ -6,31 +6,6 @@ import { useAnimeScope } from '../anim/useAnimeScope'
 import { setupHeroIntro, setupHeroScroll } from '../anim/hero'
 import { Flourish } from '../components/Flourish'
 import { isPhone } from '../anim/motion'
-
-const CIRCLE_IMAGES = ['/assets/circle-1.jpg', '/assets/circle-2.jpg']
-
-/** Circular image carousel in the center of the temple, auto-rotating every 3 seconds */
-function CircleCarousel() {
-  const [index, setIndex] = useState(0)
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setIndex((prev) => (prev + 1) % CIRCLE_IMAGES.length)
-    }, 3000)
-    return () => window.clearInterval(id)
-  }, [])
-  return (
-    <div className="hero__circle">
-      {CIRCLE_IMAGES.map((src, i) => (
-        <img
-          key={src}
-          src={src}
-          alt=""
-          className={`hero__circle-img ${i === index ? 'is-active' : ''}`}
-        />
-      ))}
-    </div>
-  )
-}
 
 /**
  * A name as letters, so Anime.js can raise them one by one. The first letter of the name and its
@@ -135,8 +110,6 @@ export function Hero() {
               <source media="(max-width: 899px)" srcSet={asset('assets/trees-md.webp')} />
               <img className="trees" src={asset('assets/trees.webp')} alt="" decoding="async" />
             </picture>
-            {/* Circular image carousel in the center of the temple */}
-            <CircleCarousel />
           </div>
         </div>
 
