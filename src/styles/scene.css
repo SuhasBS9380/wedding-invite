@@ -142,7 +142,9 @@
 .bn__kicker { font: 500 12.5px/1.2 var(--font-label); letter-spacing: 0.3em; text-transform: uppercase; color: #e9c879; }
 .banner__body .bn__day { margin-top: 24px; font: 500 14px/1 var(--font-label); letter-spacing: 0.36em; text-transform: uppercase; color: #f6e7c8; padding-left: 0.36em; }
 .banner__body .bn__num {
-  margin-top: 6px; font: 600 clamp(80px, min(8vw, 13svh), 136px)/0.92 var(--font-display); font-variant-numeric: lining-nums;
+  /* The display face draws taller than a 0.92 line box: give the glyphs room so iOS cannot clip their tops
+     and bottoms when the gold gradient is painted through background-clip:text. */
+  margin-top: 6px; font: 600 clamp(80px, min(8vw, 13svh), 136px)/1.25 var(--font-display); font-variant-numeric: lining-nums;
   background: linear-gradient(180deg, #fff2c8 8%, #e9c066 52%, #b8862c 96%); -webkit-background-clip: text; background-clip: text;
   color: transparent; -webkit-text-fill-color: transparent;
 }
@@ -414,9 +416,10 @@ html.js .banner__roll { transform: translateY(-101%); }
   .banner__zari { --pt: 16px; inset: 13px 6px 5px; }
   .banner__rod { height: 7px; }
   .banner__motif { width: 34px; margin-bottom: 8px; }
-  .bn-events__ctrl { margin-top: 4px; gap: 0; overflow: hidden; }
+  .bn-events__ctrl { margin-top: 4px; gap: 0; overflow: visible; }
   .bn-events__arrow { display: none; }
-  .bn-events__tabs { padding: 2px 1px; gap: 1px; max-width: 100%; }
+  /* Let the three date chips wrap instead of clipping the last one on a 320px iPhone. */
+  .bn-events__tabs { padding: 2px 1px; gap: 1px; max-width: 100%; flex-wrap: wrap; }
   .bn-events__tab { padding: 2px 3px; }
   .bn-events__tab-tag { font-size: 8px; }
   .bn-events__tab-badge { font-size: 6px; }
@@ -425,7 +428,10 @@ html.js .banner__roll { transform: translateY(-101%); }
   .bn__rule--top { margin: 6px 0 5px; }
   .bn__kicker { font-size: 9.5px; letter-spacing: 0.16em; }
   .banner__body .bn__day { margin-top: 8px; font-size: 10px; letter-spacing: 0.22em; }
-  .banner__body .bn__num { font-size: 48px; }
+  /* Solid gold on phones: Safari can drop the bottom of gradient-clipped text when the glyphs fill the line. */
+  .banner__body .bn__num { margin-top: 2px; font-size: 46px; line-height: 1.28; padding: 0.05em 0;
+    background: none; -webkit-background-clip: border-box; background-clip: border-box;
+    color: #f3d58b; -webkit-text-fill-color: #f3d58b; }
   .banner__body .bn__month { margin-top: 4px; font-size: 12px; letter-spacing: 0.12em; }
   .bn__rule { margin: 10px 0 9px; }
   .banner__body .bn__time { font-size: 15px; }
